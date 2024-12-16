@@ -30,21 +30,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         initFloatingActionButton();
-
-
-
     }
 
     private void initFloatingActionButton(){
         FloatingActionButton mAddFriendFab = findViewById(R.id.addFriendFab);
-        mAddFriendFab.setOnTouchListener(new View.OnTouchListener() {
+        mAddFriendFab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "add friend", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
                 startActivity(intent);
-
-                return true;
             }
         });
     }

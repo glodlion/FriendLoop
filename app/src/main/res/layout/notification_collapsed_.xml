@@ -47,11 +47,11 @@
       android:textAppearance="@style/TextAppearance.Compat.Notification.Title"/>
 
     <TextView
-      android:id="@+id/notification_collapsed1_content_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/collapsed"
-      android:textAppearance="@style/TextAppearance.Compat.Notification.Title"/>
+        android:id="@+id/notification_collapsed1_content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
   </LinearLayout>
 
   <TextView

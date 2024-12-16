@@ -20,12 +20,12 @@
         android:src="@drawable/ic_android_" />
 
     <ImageView
-      android:id="@+id/small_icon"
-      android:layout_width="18.2dp"
-      android:layout_height="18.2dp"
-      android:layout_alignBottom="@id/big_icon"
-      android:layout_alignRight="@id/big_icon"
-      android:src="@drawable/notification_info"/>
+        android:id="@+id/small_icon"
+        android:layout_width="18.2dp"
+        android:layout_height="18.2dp"
+        android:layout_alignRight="@id/big_icon"
+        android:layout_alignBottom="@id/big_icon"
+        android:src="@drawable/notification_" />
 
   </RelativeLayout>
 
@@ -48,11 +48,11 @@
       android:textAppearance="@style/TextAppearance.Compat.Notification.Title"/>
 
     <TextView
-      android:id="@+id/content_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/expanded"
-      android:textAppearance="@style/TextAppearance.Compat.Notification"/>
+        android:id="@+id/content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.Compat.Notification" />
   </LinearLayout>
 
   <LinearLayout

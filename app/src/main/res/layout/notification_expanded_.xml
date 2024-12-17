@@ -25,7 +25,7 @@
         android:layout_height="18.2dp"
         android:layout_alignRight="@id/big_icon"
         android:layout_alignBottom="@id/big_icon"
-        android:src="@drawable/sms_" />
+        android:src="@drawable/notification_" />
 
   </RelativeLayout>
 

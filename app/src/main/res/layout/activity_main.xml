@@ -21,16 +21,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friendRecyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appTitle">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friendRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -66,12 +73,16 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:layout_marginBottom="10dp">
 
             <LinearLayout
+                android:id="@+id/PersonalButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
+                android:onClick="onPersonalClick"
                 android:orientation="vertical">
 
                 <ImageView
@@ -79,14 +90,15 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    app:srcCompat="@drawable/editor_pen" />
+                    app:srcCompat="@drawable/personal" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="person" />
+                    android:text="Personal"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -113,9 +125,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/QRButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
+                android:onClick="onQrClick"
                 android:orientation="vertical">
 
                 <ImageView
@@ -123,14 +137,15 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    app:srcCompat="@drawable/editor_pen" />
+                    app:srcCompat="@drawable/qr_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="person" />
+                    android:text="QR"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>

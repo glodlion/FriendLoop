@@ -3,8 +3,20 @@ package com.example.friendloop;
 import android.net.Uri;
 
 public class Friend {
-    private String mName;
     private Uri mPicture;
+    private String mName;
+    private String mPhone;
+    private String mBirthday;
+
+    public Uri getPicture()
+    {
+        return mPicture;
+    }
+
+    public void setPicture(Uri thumbnail)
+    {
+        this.mPicture = thumbnail;
+    }
 
     public String getName()
     {
@@ -16,13 +28,23 @@ public class Friend {
         this.mName = name;
     }
 
-    public Uri getPicture()
+    public String getPhone()
     {
-        return mPicture;
+        return mPhone;
     }
 
-    public void setPicture(Uri thumbnail)
+    public void setPhone(String phone)
     {
-        this.mPicture = thumbnail;
+        this.mPhone = phone;
+    }
+
+    public String getBirthday()
+    {
+        return mBirthday;
+    }
+
+    public void setBirthday(String birthday)
+    {
+        this.mBirthday = birthday;
     }
 }

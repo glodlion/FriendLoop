@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.bumptech.glide.Glide;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -89,7 +89,10 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         viewHolder.itemView.setTag(String.valueOf(position)); //標註Tag
         Friend friend = mDataSet.get(position);
         viewHolder.mFriendName.setText(friend.getName());
-        viewHolder.mFriendPicture.setImageURI(friend.getPicture());
+//        viewHolder.mFriendPicture.setImageURI(friend.getPicture());
+        Glide.with(viewHolder.mFriendPicture.getContext())
+                .load(friend.getPicture())  // 這是圖片的 URI
+                .into(viewHolder.mFriendPicture);  // 設置圖片到 ImageView
     }
 
     @Override

@@ -79,7 +79,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 if (ContextCompat.checkSelfPermission(AddFriendActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(AddFriendActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
                 } else {
-                    Intent intent = new Intent();
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -132,23 +132,32 @@ public class AddFriendActivity extends AppCompatActivity {
         String phone = mAddActivityFriendPhone.getText().toString();
         String birthdayString = mAddActivityFriendBirthday.getText().toString();
 
-        // 將生日字符串轉換為 Date
-        Date birthday = null;
-        try {
-            if (!birthdayString.isEmpty()) {
-                // 假設日期格式為 "yyyy-MM-dd"
-                birthday = new SimpleDateFormat("yyyy-MM-dd").parse(birthdayString);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-//            Toast.makeText(this, "日期格式錯誤", Toast.LENGTH_SHORT).show();
-        }
+//        // 將生日字符串轉換為 Date
+//        Date birthday = null;
+//        try {
+//            if (!birthdayString.isEmpty()) {
+//                // 假設日期格式為 "yyyy-MM-dd"
+//                birthday = new SimpleDateFormat("yyyy-MM-dd").parse(birthdayString);
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+////            Toast.makeText(this, "日期格式錯誤", Toast.LENGTH_SHORT).show();
+//        }
         Log.d("Debug", uri.toString());
         Log.d("Debug", name);
         Log.d("Debug", phone);
-        if (birthday != null){
-            Log.d("Debug", new SimpleDateFormat("yyyy-MM-dd").format(birthday));
-        }
+//        if (birthday != null){
+//            Log.d("Debug", new SimpleDateFormat("yyyy-MM-dd").format(birthday));
+//        }
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+
+        bundle.putString("picture", uri.toString());
+        bundle.putString("name", name);
+        bundle.putString("phone", phone);
+        bundle.putString("birthday", birthdayString);
+        intent.putExtras(bundle);
+        setResult(100, intent);
     }
 
     @Override

@@ -3,9 +3,8 @@ package com.example.friendloop;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -13,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,10 +55,26 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 10; i++)
         {
             Friend friend = new Friend();
-            friend.setName("Nick");  //命名
             friend.setPicture(Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_android_));
+            friend.setName("Nick");  //命名
+            friend.setPhone("09xxxxxxxxx");
+            friend.setBirthday("2004-04-02");
             mDataset.add(friend);  //將設定好的每部 friend 回傳到 Dataset
         }
+    }
+
+    private void addData(String uri, String name, String phone, String birthday){
+        Friend friend = new Friend();
+        friend.setPicture(Uri.parse(uri));
+        friend.setName(name);  //命名
+        friend.setPhone(phone);
+        friend.setBirthday(birthday);
+        Log.d("DEBUG", "1 Dataset size: " + mDataset.size());
+        mDataset.add(friend);
+        Log.d("DEBUG", "2 Dataset size: " + mDataset.size());
+        // 通知 RecyclerView 更新新增的項目
+        mAdapter.notifyDataSetChanged();
+        mFriendRecyclerView.scrollToPosition(mDataset.size() - 1);
     }
 
     private void initRecycleView(Bundle savedInstanceState)
@@ -104,9 +118,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "add friend", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 100);
             }
         });
+    }
+
+    // 接收回傳資料
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100 && resultCode == 100) {
+            // 取得資料
+            String uri = data.getStringExtra("picture");
+            String name = data.getStringExtra("name");
+            String phone = data.getStringExtra("phone");
+            String birthdayString = data.getStringExtra("birthday");
+
+            addData(uri, name, phone, birthdayString);
+        }
     }
 
     public void onPersonalClick(View view) {

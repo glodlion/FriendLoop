@@ -37,7 +37,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class AddFriendActivity extends AppCompatActivity {
-    Button mConfirm, mCancel, mChooseBirthday;
+    Button mChooseBirthday;
     EditText mAddActivityFriendName, mAddActivityFriendPhone;
     TextView mAddActivityFriendBirthday;
     ImageView mFriendPicture;
@@ -56,14 +56,11 @@ public class AddFriendActivity extends AppCompatActivity {
 
         init();
         changeFriendPicture();
-        buttonEvent();
 
         mChooseBirthday.setOnClickListener(view -> showDatePickerDialog());
     }
 
     private void init(){
-        mConfirm = findViewById(R.id.confirm);
-        mCancel = findViewById(R.id.cancel);
         mChooseBirthday = findViewById(R.id.chooseBirthday);
         mAddActivityFriendName = findViewById(R.id.addActivityFriendName);
         mAddActivityFriendPhone = findViewById(R.id.addActivityFriendPhone);
@@ -86,24 +83,6 @@ public class AddFriendActivity extends AppCompatActivity {
                     startActivityForResult(intent, 1);
                 }
                 return true;
-            }
-        });
-    }
-
-    private void buttonEvent(){
-        mConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Uri uri, String name, String phone, Date birthday
-                saveFriendInfo();
-                finish();
-            }
-        });
-
-        mCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
             }
         });
     }
@@ -187,5 +166,14 @@ public class AddFriendActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void onCancelClick(View view) {
+        finish();
+    }
+
+    public void onAddClick(View view) {
+        saveFriendInfo();
+        finish();
     }
 }

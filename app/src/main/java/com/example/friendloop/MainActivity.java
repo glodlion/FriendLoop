@@ -147,11 +147,13 @@ public class MainActivity extends AppCompatActivity {
             String name = data.getStringExtra("name");
             String phone = data.getStringExtra("phone");
             String birthdayString = data.getStringExtra("birthday");
+            String preference = data.getStringExtra("preference");
 
             Friend friend = new Friend(name, uri , phone , birthdayString , "hehe");
 
             mSqlDataBaseHelper.addContact(friend);
-            addData(uri, name, phone, birthdayString ,"hehe");
+          
+            addData(uri, name, phone, birthdayString, preference);
 
         }
     }

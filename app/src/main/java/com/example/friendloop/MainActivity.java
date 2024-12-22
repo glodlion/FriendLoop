@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             Friend friend = new Friend(name, uri , phone , birthdayString , "hehe");
 
             mSqlDataBaseHelper.addContact(friend);
+          
             addData(uri, name, phone, birthdayString, preference);
 
         }

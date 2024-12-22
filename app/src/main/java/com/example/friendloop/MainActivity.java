@@ -1,6 +1,7 @@
 package com.example.friendloop;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected RecyclerView.LayoutManager mLayoutManager;
     protected ArrayList<Friend> mDataset = new ArrayList<>();
     protected LayoutManagerType mCurrentLayoutManagerType;
+    protected SqlDataBaseHelper mSqlDataBaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        initDataset();
+        mSqlDataBaseHelper = new SqlDataBaseHelper(this);
+        initRecyclerView();
         initRecycleView(savedInstanceState);
 
         initFloatingActionButton();
@@ -49,23 +51,31 @@ public class MainActivity extends AppCompatActivity {
         LINEAR_LAYOUT_MANAGER
     }
 
-    private void initDataset()
-    {
-        mDataset = new ArrayList<Friend>();
-        for (int i = 0; i < 10; i++)
-        {
-            Friend friend = new Friend();
-            friend.setPicture(Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_android_));
-            friend.setName("Nick");  //命名
-            friend.setPhone("09xxxxxxxxx");
-            friend.setBirthday("2004-04-02");
-            mDataset.add(friend);  //將設定好的每部 friend 回傳到 Dataset
+    private void initRecyclerView() {
+        mDataset = new ArrayList<>();
+        SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(this);
+        Cursor cursor = dbHelper.getAllContacts();
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Friend friend = new Friend();
+                int columnIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
+                String name = columnIndex < 0 ? "Default Value" : cursor.getString(columnIndex);
+                friend.setName(name);
+
+                //friend.setPhone(cursor.getString(cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PHONE)));
+                //friend.setBirthday(cursor.getString(cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY)));
+                // 假設每個好友有一個固定圖片
+                //friend.setPicture(Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_android_));
+                mDataset.add(friend);
+            } while (cursor.moveToNext());
+            cursor.close();
         }
     }
 
     private void addData(String uri, String name, String phone, String birthday){
         Friend friend = new Friend();
-        friend.setPicture(Uri.parse(uri));
+        friend.setPicture(uri);
         friend.setName(name);  //命名
         friend.setPhone(phone);
         friend.setBirthday(birthday);
@@ -130,11 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 100 && resultCode == 100) {
             // 取得資料
+
             String uri = data.getStringExtra("picture");
             String name = data.getStringExtra("name");
             String phone = data.getStringExtra("phone");
             String birthdayString = data.getStringExtra("birthday");
+            Friend friend = new Friend(name, uri , phone , birthdayString , "hehe");
 
+            mSqlDataBaseHelper.addContact(friend);
             addData(uri, name, phone, birthdayString);
         }
     }

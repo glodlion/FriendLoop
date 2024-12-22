@@ -17,6 +17,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_CONTACTS = "friends";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_IMAGE_URI = "imageUri";
     public static final String COLUMN_PHONE = "phone";
     public static final String COLUMN_BIRTHDAY = "birthday";
     public static final String COLUMN_PREFERENCES = "preferences";
@@ -26,6 +27,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_CONTACTS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_NAME + " TEXT NOT NULL, " +
+                    COLUMN_IMAGE_URI + " TEXT, " +  // 新增此欄位
                     COLUMN_PHONE + " TEXT, " +
                     COLUMN_BIRTHDAY + " TEXT, " +
                     COLUMN_PREFERENCES + " TEXT);";
@@ -47,14 +49,23 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
 
     // 1. 取出所有詳細資料
     public Cursor getAllContacts() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_CONTACTS, null);
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_CONTACTS, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cursor;
     }
 
-    // 2. 取出所有人的部分資訊（只取 Name 和 Phone）
+    // 2. 取出所有人的部分資訊（只取 Name 和 Phone , 還有）
     public Cursor getContactsSummary() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT " + COLUMN_NAME + ", " + COLUMN_PHONE + " FROM " + TABLE_CONTACTS, null);
+        return db.rawQuery(
+                "SELECT " + COLUMN_NAME + ", " + COLUMN_PHONE + ", " + COLUMN_IMAGE_URI +
+                        " FROM " + TABLE_CONTACTS, null);
     }
 
     // 3. 單筆取出資料
@@ -72,6 +83,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_PHONE, friend.getPhone());
         values.put(COLUMN_BIRTHDAY, friend.getBirthday());
         values.put(COLUMN_PREFERENCES, friend.getPreferences());
+        values.put(COLUMN_IMAGE_URI, friend.getPicture());
 
         return db.update(TABLE_CONTACTS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
@@ -86,6 +98,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_NAME, friend.getName());
             values.put(COLUMN_PHONE, friend.getPhone());
             values.put(COLUMN_BIRTHDAY, friend.getBirthday());
+            values.put(COLUMN_IMAGE_URI , friend.getPicture());
             values.put(COLUMN_PREFERENCES, friend.getPreferences());
             result = db.insert(TABLE_CONTACTS, null, values);
         } catch (Exception e) {

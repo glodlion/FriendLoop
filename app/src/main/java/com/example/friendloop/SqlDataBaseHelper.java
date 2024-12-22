@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 public class SqlDataBaseHelper extends SQLiteOpenHelper {
@@ -92,6 +93,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
     public long addContact(Friend friend) {
         long result = -1;
         SQLiteDatabase db = null;
+
         try {
             db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -118,7 +120,20 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_CONTACTS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
         db.close();
     }
-
+    public void resetTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            // 刪除現有資料表
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+            // 重新建立資料表
+            db.execSQL(CREATE_TABLE_CONTACTS);
+            Log.d("SqlDataBaseHelper", "資料表已重製成功");
+        } catch (Exception e) {
+            Log.e("SqlDataBaseHelper", "資料表重製失敗", e);
+        } finally {
+            db.close();
+        }
+    }
 
 
 }

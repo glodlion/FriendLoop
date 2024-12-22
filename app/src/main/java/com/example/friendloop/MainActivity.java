@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         mSqlDataBaseHelper = new SqlDataBaseHelper(this);
+//        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
         initRecyclerView();
         initRecycleView(savedInstanceState);
 

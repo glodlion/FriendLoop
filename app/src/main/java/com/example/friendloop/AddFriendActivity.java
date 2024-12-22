@@ -55,7 +55,6 @@ public class AddFriendActivity extends AppCompatActivity {
         });
 
         init();
-        changeFriendPicture();
 
         mChooseBirthday.setOnClickListener(view -> showDatePickerDialog());
     }
@@ -70,22 +69,12 @@ public class AddFriendActivity extends AppCompatActivity {
         mFriendPicture.setImageResource(R.drawable.ic_launcher_foreground);
     }
 
-    private void changeFriendPicture(){
-        mFriendPicture.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (ContextCompat.checkSelfPermission(AddFriendActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(AddFriendActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivityForResult(intent, 1);
-                }
-                return true;
-            }
-        });
+    public void onPictureClick(View view) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(intent, 1);
     }
 
     private void showDatePickerDialog() {
@@ -143,32 +132,22 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                // 用戶拒絕了權限
-                Toast.makeText(this, "需要授權才能選擇圖片", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-        }
-        if(resultCode == RESULT_OK){
-            uri = data.getData();
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                mFriendPicture.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+        super.onActivityResult(requestCode, resultCode, data);
+        // 確保是圖片選擇結果
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // 獲取選擇的圖片 URI
+            if (data != null) {
+                uri = data.getData();
+                try {
+                    // 使用 URI 來顯示選擇的圖片
+                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                    mFriendPicture.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onCancelClick(View view) {

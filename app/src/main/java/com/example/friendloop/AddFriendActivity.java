@@ -38,7 +38,7 @@ import java.util.Date;
 
 public class AddFriendActivity extends AppCompatActivity {
     Button mChooseBirthday;
-    EditText mAddActivityFriendName, mAddActivityFriendPhone;
+    EditText mAddActivityFriendName, mAddActivityFriendPhone, mAddActivityFriendPreferences;
     TextView mAddActivityFriendBirthday;
     ImageView mFriendPicture;
     Uri uri;
@@ -65,6 +65,7 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddActivityFriendName = findViewById(R.id.addActivityFriendName);
         mAddActivityFriendPhone = findViewById(R.id.addActivityFriendPhone);
         mAddActivityFriendBirthday = findViewById(R.id.addActivityFriendBirthday);
+        mAddActivityFriendPreferences = findViewById(R.id.addActivityFriendPreferences);
         mFriendPicture = findViewById(R.id.addActivityFriendPicture);
         mFriendPicture.setImageResource(R.drawable.ic_launcher_foreground);
     }
@@ -110,6 +111,7 @@ public class AddFriendActivity extends AppCompatActivity {
         String name = mAddActivityFriendName.getText().toString();
         String phone = mAddActivityFriendPhone.getText().toString();
         String birthdayString = mAddActivityFriendBirthday.getText().toString();
+        String preference = mAddActivityFriendPreferences.getText().toString();
 
 //        // 將生日字符串轉換為 Date
 //        Date birthday = null;
@@ -135,6 +137,7 @@ public class AddFriendActivity extends AppCompatActivity {
         bundle.putString("name", name);
         bundle.putString("phone", phone);
         bundle.putString("birthday", birthdayString);
+        bundle.putString("preference", preference);
         intent.putExtras(bundle);
         setResult(100, intent);
     }

@@ -64,6 +64,7 @@ public class Friend {
         this.mBirthday = birthday;
     }
 
+
     public String getPreferences()
     {
         return mPreferences;
@@ -73,5 +74,6 @@ public class Friend {
     {
         this.mPreferences = birthday;
     }
+
 
 }

@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addData(String uri, String name, String phone, String birthday){
+    private void addData(String uri, String name, String phone, String birthday, String preference){
         Friend friend = new Friend();
         friend.setPicture(Uri.parse(uri));
         friend.setName(name);  //命名
@@ -134,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
             String name = data.getStringExtra("name");
             String phone = data.getStringExtra("phone");
             String birthdayString = data.getStringExtra("birthday");
+            String preference = data.getStringExtra("preference");
 
-            addData(uri, name, phone, birthdayString);
+            addData(uri, name, phone, birthdayString, preference);
         }
     }
 

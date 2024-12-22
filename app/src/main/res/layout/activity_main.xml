@@ -53,7 +53,7 @@
             android:id="@+id/bottomAppBar"
             style="@style/Widget.Material3.BottomAppBar.Legacy"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="80dp"
             android:layout_gravity="bottom"
             app:backgroundTint="#AABDE6"
 
@@ -68,11 +68,11 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add_black"
             app:backgroundTint="#607196"
-            app:layout_anchor="@id/bottomAppBar" />
+            app:layout_anchor="@id/bottomAppBar"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="80dp"
             android:layout_gravity="bottom"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"

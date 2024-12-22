@@ -47,4 +47,14 @@ public class Friend {
     {
         this.mBirthday = birthday;
     }
+
+    public String getPreference()
+    {
+        return mBirthday;
+    }
+
+    public void setPreference(String birthday)
+    {
+        this.mBirthday = birthday;
+    }
 }

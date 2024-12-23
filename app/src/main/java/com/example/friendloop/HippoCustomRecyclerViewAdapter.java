@@ -1,6 +1,8 @@
 package com.example.friendloop;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,9 +91,8 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         viewHolder.itemView.setTag(String.valueOf(position)); //標註Tag
         Friend friend = mDataSet.get(position);
         viewHolder.mFriendName.setText(friend.getName());
-//        viewHolder.mFriendPicture.setImageURI(friend.getPicture());
         Glide.with(viewHolder.mFriendPicture.getContext())
-                .load(friend.getPicture())  // 這是圖片的 URI
+                .load(Uri.parse(friend.getPicture()))  // 這是圖片的 URI
                 .into(viewHolder.mFriendPicture);  // 設置圖片到 ImageView
     }
 

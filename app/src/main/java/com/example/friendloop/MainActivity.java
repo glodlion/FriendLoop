@@ -52,10 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
         mSqlDataBaseHelper = new SqlDataBaseHelper(this);
 //        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
-        initRecyclerView();
-        initRecycleView(savedInstanceState);
         initSharedPreferences();
         initFloatingActionButton();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initRecyclerView();
+        initRecycleView();
     }
 
     private enum LayoutManagerType
@@ -148,16 +153,11 @@ public class MainActivity extends AppCompatActivity {
         mFriendRecyclerView.scrollToPosition(mDataset.size() - 1);
     }
 
-    private void initRecycleView(Bundle savedInstanceState)
+    private void initRecycleView()
     {
         mFriendRecyclerView = (RecyclerView) findViewById(R.id.friendRecyclerView);
         mLayoutManager = new LinearLayoutManager(MainActivity.this);
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        if (savedInstanceState != null)
-        {
-            // Restore saved layout manager type.
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable("EXTRA_KEY_LAYOUT_MANAGER");
-        }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
         //  TO DO 動態載入自定義之 HippoCustomRecyclerViewAdapter 物件mAdapter，包含自訂UI friend_list_item.xml。
@@ -213,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
             mSqlDataBaseHelper.addContact(friend);
           
             addData(uri, name, phone, birthdayString, preference);
-
         }
     }
 
@@ -232,5 +231,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, QrActivity.class);
         startActivity(intent);
     }
-
 }

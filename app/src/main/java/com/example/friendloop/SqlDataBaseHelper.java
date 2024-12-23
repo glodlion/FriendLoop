@@ -120,6 +120,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_CONTACTS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
         db.close();
     }
+
     public void resetTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         try {

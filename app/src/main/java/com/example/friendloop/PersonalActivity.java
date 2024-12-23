@@ -2,6 +2,7 @@ package com.example.friendloop;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class PersonalActivity extends AppCompatActivity {
     ImageView mPersonalPicture;
     TextView mPersonalName, mPersonalPhone, mPersonalBirthday, mPersonalPreferences, mTitle;
     String name, phone, birthday, preference, picture;
-    int state;
+    int state, pos;
     SharedPreferences sharedPreferences;
 
     @Override
@@ -90,11 +91,47 @@ public class PersonalActivity extends AppCompatActivity {
 
     private void State2(){
         mTitle.setText("朋友資訊");
+        // 從 Intent 中取得傳遞的資料
+        Bundle bundle = getIntent().getExtras();
 
+        if (bundle != null) {
+            // 確保 pos 值不為空
+            pos = bundle.getInt("pos")+1;
+            SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(this);
+            Cursor cursor = dbHelper.getContactById(pos);
 
+            // 確保 Cursor 不為 null 且有資料
+            if (cursor != null && cursor.moveToFirst()) {
+                // 取出欄位的索引
+                int nameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
+                int pictureIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_IMAGE_URI);
+                int phoneIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PHONE);
+                int birthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
+                int preferenceIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PREFERENCES);
 
-
-
+                // 根據索引取得資料
+                name = (nameIndex >= 0) ? cursor.getString(nameIndex) : "Default Name";
+                picture = (pictureIndex >= 0) ? cursor.getString(pictureIndex) : "Default Picture";
+                phone = (phoneIndex >= 0) ? cursor.getString(phoneIndex) : "Default Phone";
+                birthday = (birthdayIndex >= 0) ? cursor.getString(birthdayIndex) : "Default Birthday";
+                preference = (preferenceIndex >= 0) ? cursor.getString(preferenceIndex) : "Default Preference";
+                // 關閉 Cursor
+                cursor.close();
+                String path = "android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground;
+                try{
+                    Glide.with(this)
+                            .load(Uri.parse(picture))
+                            .override(500, 500)
+                            .into(mPersonalPicture);
+                } catch (Exception e){
+                    mPersonalPicture.setImageURI(Uri.parse(path));
+                }
+                mPersonalName.setText(name);
+                mPersonalPhone.setText(phone);
+                mPersonalBirthday.setText(birthday);
+                mPersonalPreferences.setText(preference);
+            }
+        }
     }
 
     public void onCancelClick(View view) {
@@ -106,6 +143,14 @@ public class PersonalActivity extends AppCompatActivity {
 
     public void onChangeInfoClick(View view) {
         Intent intent = new Intent(PersonalActivity.this, EditInfomation.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("pos", pos);
+        bundle.putString("name", name);
+        bundle.putString("picture", picture);
+        bundle.putString("phone", phone);
+        bundle.putString("birthday", birthday);
+        bundle.putString("preference", preference);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

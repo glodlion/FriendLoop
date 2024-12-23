@@ -3,6 +3,7 @@ package com.example.friendloop;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -34,7 +35,7 @@ public class EditInfomation extends AppCompatActivity {
     Uri uri;
     SharedPreferences sharedPreferences;
     String name, phone, birthday, preference, picture;
-    int state;
+    int state, pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,30 @@ public class EditInfomation extends AppCompatActivity {
     private void State2(){
         mTitle.setText("編輯朋友資訊");
 
+        // 從 Intent 中取得傳遞的資料
+        Bundle bundle = getIntent().getExtras();
+
+        pos = bundle.getInt("pos");
+        name = bundle.getString("name");
+        phone = bundle.getString("phone");
+        birthday = bundle.getString("birthday");
+        picture = bundle.getString("picture");
+        preference = bundle.getString("preference");
+        uri = Uri.parse(picture);
+
+        String path = "android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground;
+        try{
+            Glide.with(this)
+                    .load(Uri.parse(picture))
+                    .override(500, 500)
+                    .into(mChangeInfoPicture);
+        } catch (Exception e){
+            mChangeInfoPicture.setImageURI(Uri.parse(path));
+        }
+        mChangeInfoName.setText(name);
+        mChangeInfoPhone.setText(phone);
+        mChangeInfoBirthday.setText(birthday);
+        mChangeInfoPreferences.setText(preference);
     }
 
     public void onPictureClick(View view) {
@@ -148,38 +173,21 @@ public class EditInfomation extends AppCompatActivity {
         if(uri == null){
             uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground);
         }
-        String name = mChangeInfoName.getText().toString();
-        String phone = mChangeInfoPhone.getText().toString();
-        String birthdayString = mChangeInfoBirthday.getText().toString();
-        String preference = mChangeInfoPreferences.getText().toString();
+        String nameNew = mChangeInfoName.getText().toString();
+        String phoneNew = mChangeInfoPhone.getText().toString();
+        String birthdayStringNew = mChangeInfoBirthday.getText().toString();
+        String preferenceNew = mChangeInfoPreferences.getText().toString();
 
-//        // 將生日字符串轉換為 Date
-//        Date birthday = null;
-//        try {
-//            if (!birthdayString.isEmpty()) {
-//                // 假設日期格式為 "yyyy-MM-dd"
-//                birthday = new SimpleDateFormat("yyyy-MM-dd").parse(birthdayString);
-//            }
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-////            Toast.makeText(this, "日期格式錯誤", Toast.LENGTH_SHORT).show();
-//        }
-        Log.d("Debug", uri.toString());
-        Log.d("Debug", name);
-        Log.d("Debug", phone);
-//        if (birthday != null){
-//            Log.d("Debug", new SimpleDateFormat("yyyy-MM-dd").format(birthday));
-//        }
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
+        Friend friend = new Friend();
+        friend.setName(nameNew);
+        friend.setPicture(uri.toString());
+        friend.setBirthday(birthdayStringNew);
+        friend.setPreferences(preferenceNew);
+        friend.setPhone(phoneNew);
 
-        bundle.putString("picture", uri.toString());
-        bundle.putString("name", name);
-        bundle.putString("phone", phone);
-        bundle.putString("birthday", birthdayString);
-        bundle.putString("preference", preference);
-        intent.putExtras(bundle);
-        setResult(100, intent);
+        SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(this);
+        // 執行更新操作
+        dbHelper.updateContact(pos, friend);
     }
 
     @Override
@@ -214,4 +222,6 @@ public class EditInfomation extends AppCompatActivity {
         }
         finish();
     }
+
+
 }

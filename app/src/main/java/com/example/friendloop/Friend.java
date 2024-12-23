@@ -70,9 +70,9 @@ public class Friend {
         return mPreferences;
     }
 
-    public void setPreferences(String birthday)
+    public void setPreferences(String preferences)
     {
-        this.mPreferences = birthday;
+        this.mPreferences = preferences;
     }
 
 

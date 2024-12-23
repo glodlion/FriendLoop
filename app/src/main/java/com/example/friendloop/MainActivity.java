@@ -1,6 +1,7 @@
 package com.example.friendloop;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -53,9 +54,8 @@ public class MainActivity extends AppCompatActivity {
 //        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
         initRecyclerView();
         initRecycleView(savedInstanceState);
-
+        initSharedPreferences();
         initFloatingActionButton();
-
     }
 
     private enum LayoutManagerType
@@ -93,6 +93,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // 初始化SharedPreferences，用來存個人資訊及編輯狀態(個人資訊、朋友資訊)
+    private void initSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (!sharedPreferences.contains("state")){
+            editor.putString("name", "姓名");
+            editor.putString("phone", "電話");
+            editor.putString("birthday", "生日");
+            editor.putString("preference", "備註");
+            editor.putString("picture", "android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground);
+        }
+        editor.putInt("state", 0); // 狀態值： 1 表示個人資訊頁面，2 表示朋友資訊頁面
+        editor.apply();
+    }
+
     private void initRecyclerView() {
         mDataset = new ArrayList<>();
         SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(this);
@@ -124,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         friend.setName(name);  //命名
         friend.setPhone(phone);
         friend.setBirthday(birthday);
+        friend.setPreferences(preference);
         Log.d("DEBUG", "1 Dataset size: " + mDataset.size());
         mDataset.add(friend);
         Log.d("DEBUG", "2 Dataset size: " + mDataset.size());
@@ -202,6 +218,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onPersonalClick(View view) {
+        // 修改 SharedPreferences 中的 state 值
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("state", 1); // 修改狀態為 1，表示進入個人頁面
+        editor.apply(); // 提交變更（異步儲存）
+
         Intent intent = new Intent(MainActivity.this, PersonalActivity.class);
         startActivity(intent);
     }

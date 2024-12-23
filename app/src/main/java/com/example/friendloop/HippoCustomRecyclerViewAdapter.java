@@ -1,12 +1,17 @@
 package com.example.friendloop;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
@@ -25,6 +30,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         private final TextView mFriendName;
         private final ImageView mFriendPicture;
         private final ImageView mMore;
+//        private final LinearLayout mListItem;
 
         public ViewHolder(View view)
         {
@@ -35,6 +41,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
             mFriendName = (TextView) view.findViewById(R.id.friendName);
             mFriendPicture = (ImageView) view.findViewById(R.id.friendPicture);
             mMore = (ImageView) view.findViewById(R.id.more);
+//            mListItem = (LinearLayout) view.findViewById(R.id.list_item);
 
             mMore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -43,14 +50,19 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                 }
             });
 
-//            view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String pos = v.getTag().toString();
-//                    String msg = String.format("你點選的是第 %s 部電影", pos);
-//                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-//                }
-//            });
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("state", 2);
+                    editor.apply();
+                    String pos = v.getTag().toString();
+                    Intent intent = new Intent(mContext, PersonalActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
+
         }
 
         public TextView getFriendName()
@@ -93,6 +105,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         viewHolder.mFriendName.setText(friend.getName());
         Glide.with(viewHolder.mFriendPicture.getContext())
                 .load(Uri.parse(friend.getPicture()))  // 這是圖片的 URI
+                .override(500, 500)
                 .into(viewHolder.mFriendPicture);  // 設置圖片到 ImageView
     }
 

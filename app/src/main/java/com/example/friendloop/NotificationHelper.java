@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -20,6 +22,7 @@ import com.example.friendloop.Constants;
 import com.example.friendloop.R;
 import com.example.friendloop.my_msg_handler;
 import android.net.Uri;
+import com.example.friendloop.NotificationDismissReceiver;
 
 public class NotificationHelper extends ContextWrapper
 {
@@ -73,14 +76,14 @@ public class NotificationHelper extends ContextWrapper
 
     public Notification getNotification2(String title, String body, String strUri)
     {
-        Intent intent = new Intent(this, my_msg_handler.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        // TO DO
+//        Intent intent = new Intent(this, my_msg_handler.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        // TO DO
         Bundle bundle = new Bundle();
         bundle.putString(Constants.EXTRA_NOTIFICATION_MSG,body);
-        intent.putExtras(bundle);
+//        intent.putExtras(bundle);
 
-        PendingIntent pendingintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//        PendingIntent pendingintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // TO DO
         RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded_);
@@ -90,21 +93,19 @@ public class NotificationHelper extends ContextWrapper
         expandedView.setTextViewText(R.id.timestamp,curtime);
         expandedView.setTextViewText(R.id.notification_message,body);
 
-        Intent leftIntent = new Intent(this, my_msg_handler.class);
-        leftIntent.putExtras(bundle);
-        leftIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent1 = PendingIntent.getActivity(this, 100, leftIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        expandedView.setOnClickPendingIntent(R.id.notification_collapsed_left_button, pendingIntent1);
+        Intent leftIntent = new Intent(this, NotificationDismissReceiver.class);
+        leftIntent.setAction("ACTION_DISMISS_NOTIFICATION"); // 自定義動作
+        PendingIntent pendingIntentLeft = PendingIntent.getBroadcast(this, 100, leftIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        expandedView.setOnClickPendingIntent(R.id.notification_collapsed_left_button, pendingIntentLeft);
 
-
-        Intent rightIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(strUri));
-        rightIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent2 = PendingIntent.getActivity(this, 200, rightIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        expandedView.setOnClickPendingIntent(R.id.notification_collapsed_right_button, pendingIntent2);
+        Intent rightIntent = new Intent(this, MainActivity.class);
+        rightIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 確保是主畫面
+        PendingIntent pendingIntentRight = PendingIntent.getActivity(this, 200, rightIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        expandedView.setOnClickPendingIntent(R.id.notification_collapsed_right_button, pendingIntentRight);
 
 
         RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed_);
-        // TO DO
+        expandedView.setTextViewText(R.id.content_text,title);
         expandedView.setTextViewText(R.id.timestamp,curtime);
         expandedView.setImageViewResource(R.id.notification_collapsed_left_button, R.drawable.no);
         expandedView.setImageViewResource(R.id.notification_collapsed_right_button, R.drawable.yes);
@@ -116,11 +117,12 @@ public class NotificationHelper extends ContextWrapper
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
-                .setContentIntent(pendingintent)
                 .setAutoCancel(true)
                 .build();
         return notification;
     }
+
+
 
     public void notify(int id, Notification notification)
     {

@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class SqlDataBaseHelper extends SQLiteOpenHelper {
 
@@ -178,6 +182,19 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
         } finally {
             db.close();
         }
+    }
+
+
+    // 查詢生日的方法
+    public Cursor getTodayBirthdays() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String today = new SimpleDateFormat("MM-dd", Locale.getDefault()).format(new Date());
+
+        // 查詢今天生日的資料
+        return db.rawQuery(
+                "SELECT * FROM " + TABLE_CONTACTS + " WHERE strftime('%m-%d', " + COLUMN_BIRTHDAY + ") = ?",
+                new String[]{today}
+        );
     }
 
 

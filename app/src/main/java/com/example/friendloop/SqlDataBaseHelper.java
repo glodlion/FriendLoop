@@ -181,5 +181,15 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+    // 查詢生日的方法
+    public Cursor getTodayBirthdays(String today) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT * FROM " + TABLE_CONTACTS + " WHERE strftime('%m-%d', " + COLUMN_BIRTHDAY + ") = ?",
+                new String[]{today}
+        );
+    }
+
+
 }
 

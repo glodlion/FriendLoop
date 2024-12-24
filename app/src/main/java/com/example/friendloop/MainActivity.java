@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity{
         editor.apply();
     }
 
-    private void initRecyclerView() {
+    public void initRecyclerView() {
         mDataset = new ArrayList<>();
         SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(this);
         Cursor cursor = dbHelper.getAllContacts();
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity{
         mFriendRecyclerView.scrollToPosition(mDataset.size() - 1);
     }
 
-    private void initRecycleView()
+    public void initRecycleView()
     {
         mFriendRecyclerView = (RecyclerView) findViewById(R.id.friendRecyclerView);
         mLayoutManager = new LinearLayoutManager(MainActivity.this);
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity{
             String birthdayString = data.getStringExtra("birthday");
             String preference = data.getStringExtra("preference");
 
-            Friend friend = new Friend(name, uri , phone , birthdayString , "hehe");
+            Friend friend = new Friend(name, uri , phone , birthdayString , preference);
 
             mSqlDataBaseHelper.addContact(friend);
           

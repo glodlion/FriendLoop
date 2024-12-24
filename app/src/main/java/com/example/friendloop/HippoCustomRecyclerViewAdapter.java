@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -38,7 +39,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         private final ImageView mMore;
 //        private final LinearLayout mListItem;
 
-        public ViewHolder(View view)
+        public ViewHolder(View view, HippoCustomRecyclerViewAdapter adapter)
         {
             super(view);
             //  設計RecyclerView中點選RecyclerView.ViewHolder的項目，以Toast顯示訊息：「你點選的是第 xx 部電影」
@@ -84,7 +85,25 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                                 mContext.startActivity(intent);
                             } else if(item.getItemId() == R.id.option2){
                                 Toast.makeText(mContext, "Break", Toast.LENGTH_LONG).show();
-                                
+                                AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+                                        .setTitle("你確定要\"Break\"好友嗎?")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(mContext);
+                                                dbHelper.deleteContactAndResort(position+1);
+                                                adapter.removeItem(position);
+                                                ((MainActivity) mContext).initRecyclerView();
+                                                ((MainActivity) mContext).initRecycleView();
+                                            }
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            }
+                                        })
+                                        .show();
                             }
 
                             return false;
@@ -142,7 +161,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i)
     {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_friend_list_item, viewGroup, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, this);
     }
 
     @Override
@@ -159,16 +178,16 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                 .into(viewHolder.mFriendPicture);  // 設置圖片到 ImageView
     }
 
-    public void updateData(int position, String newName, String newPictureUri) {
-        // 檢查是否在有效範圍內
+    public void removeItem(int position) {
         if (position >= 0 && position < mDataSet.size()) {
-            Friend friend = mDataSet.get(position);
-            // 更新資料
-            friend.setName(newName);
-            friend.setPicture(newPictureUri);
+            // 從資料集中刪除指定位置的項目
+            mDataSet.remove(position);
 
-            // 通知 RecyclerView 更新
-            notifyItemChanged(position);
+            // 通知 RecyclerView 項目已被刪除
+            notifyItemRemoved(position);
+
+            // 如果你希望 RecyclerView 重新整理其後的所有項目索引
+            notifyItemRangeChanged(position, mDataSet.size());
         }
     }
 

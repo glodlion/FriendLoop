@@ -14,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+import androidx.annotation.NonNull;
 
 public class Test extends AppCompatActivity {
 
@@ -50,14 +55,33 @@ public class Test extends AppCompatActivity {
 //            }
 //        });
 
-        btn2.setOnClickListener(new Button.OnClickListener()
-        {
+        btn2.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                sendNotification(NOTIFICATION_SECONDARY1, getTitleSecondaryText());
+            public void onClick(View view) {
+                // 測試發送通知功能
+                String friendName = "測試用例";
+                String birthday = "2024-12-24";
+
+                // 使用 NotificationHelper 測試發送通知
+                NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
+                Notification notification = notificationHelper.getNotification2(
+                        "生日提醒",
+                        friendName + " 今天生日！快去祝福吧！",
+                        null // 這裡可以傳入圖片 URI，如果沒有可以設為 null
+                );
+
+                if (notification != null) {
+                    notificationHelper.notify(1, notification);
+                }
+
+                // 啟動 Worker 來偵測是否有人生日
+                OneTimeWorkRequest testWorkRequest = new OneTimeWorkRequest.Builder(BirthdayNotificationManager.class)
+                        .build();
+
+                WorkManager.getInstance(getApplicationContext()).enqueue(testWorkRequest);
             }
         });
+
     }
 
     public void sendNotification(int id, String title)

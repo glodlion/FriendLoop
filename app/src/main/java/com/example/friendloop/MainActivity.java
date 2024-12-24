@@ -1,5 +1,6 @@
 package com.example.friendloop;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -7,7 +8,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,13 +31,14 @@ import java.util.ArrayList;
 import android.Manifest;
 import androidx.annotation.NonNull;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     RecyclerView mFriendRecyclerView;
     protected HippoCustomRecyclerViewAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected ArrayList<Friend> mDataset = new ArrayList<>();
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected SqlDataBaseHelper mSqlDataBaseHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,4 +237,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, QrActivity.class);
         startActivity(intent);
     }
+
+//    public void onDotClick(View view) {
+//        Toast.makeText(this, "點擊了更多", Toast.LENGTH_LONG).show();
+//    }
 }

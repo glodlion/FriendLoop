@@ -2,6 +2,7 @@ package com.example.friendloop;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,10 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
@@ -48,7 +52,47 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
             mMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext, "點擊了更多", Toast.LENGTH_LONG).show();
+                    int position = getAdapterPosition();
+
+                    if (position == RecyclerView.NO_POSITION) {
+                        // 如果位置無效，直接返回
+                        return;
+                    }
+
+                    // 創建 PopupMenu，將其與當前的mMore ImageView綁定
+                    PopupMenu popup = new PopupMenu(mContext, view);
+                    MenuInflater inflater = popup.getMenuInflater();
+                    // 為PopupMenu加載菜單
+                    inflater.inflate(R.menu.dot_menu, popup.getMenu());
+
+                    // 設置菜單項目的點擊事件
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Log.d("DEBUG", "TEST: " +item.getItemId());
+                            if(item.getItemId() == R.id.option1){
+                                Toast.makeText(mContext, "查看好友資訊", Toast.LENGTH_LONG).show();
+                                SharedPreferences sharedPreferences = mContext.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt("state", 2);
+                                editor.apply();
+                                String pos = String.valueOf(position);
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("pos", Integer.parseInt(pos));
+                                Intent intent = new Intent(mContext, PersonalActivity.class);
+                                intent.putExtras(bundle);
+                                mContext.startActivity(intent);
+                            } else if(item.getItemId() == R.id.option2){
+                                Toast.makeText(mContext, "Break", Toast.LENGTH_LONG).show();
+                                
+                            }
+
+                            return false;
+                        }
+                    });
+
+                    // 顯示PopupMenu
+                    popup.show();
                 }
             });
 

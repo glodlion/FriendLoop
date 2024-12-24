@@ -39,16 +39,16 @@ public class Test extends AppCompatActivity {
     private void init()
     {
         mNotiHelper = new com.example.friendloop.NotificationHelper(this);
-        btn1 = findViewById(R.id.button);
+        //btn1 = findViewById(R.id.button);
         btn2 = findViewById(R.id.button2);
-        btn1.setOnClickListener(new Button.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                sendNotification(NOTIFICATION_PRIMARY1, getTitlePrimaryText());
-            }
-        });
+//        btn1.setOnClickListener(new Button.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                sendNotification(NOTIFICATION_PRIMARY1, getTitlePrimaryText());
+//            }
+//        });
 
         btn2.setOnClickListener(new Button.OnClickListener()
         {
@@ -65,9 +65,9 @@ public class Test extends AppCompatActivity {
         Notification nb = null;
         switch (id)
         {
-            case NOTIFICATION_PRIMARY1:
-                nb = mNotiHelper.getNotification1(title, getString(R.string.str_notification_body_1));
-                break;
+//            case NOTIFICATION_PRIMARY1:
+//                nb = mNotiHelper.getNotification1(title, getString(R.string.str_notification_body_1));
+//                break;
             case NOTIFICATION_SECONDARY1:
                 nb = mNotiHelper.getNotification2(title, getString(R.string.str_notification_body_2), strPromotionUri);
                 break;
@@ -78,14 +78,14 @@ public class Test extends AppCompatActivity {
         }
     }
 
-    private String getTitlePrimaryText()
-    {
-        if (btn1 != null)
-        {
-            return btn1.getText().toString();
-        }
-        return "";
-    }
+//    private String getTitlePrimaryText()
+//    {
+//        if (btn1 != null)
+//        {
+//            return btn1.getText().toString();
+//        }
+//        return "";
+//    }
 
     private String getTitleSecondaryText()
     {

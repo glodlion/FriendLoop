@@ -11,7 +11,8 @@
     <string name="expanded">這是一個可以被收合的訊息，按【^】我收起來吧</string>
     <string name="collapsed">展開我看更多</string>
     <string name="str_notification_body_1">【領神券】揪好友威秀看電影★荒野透氣外套5折↘復古真皮包37折！亞尼x領券滿百送千活動熱烈展開!!</string>
-    <string name="str_notification_body_2">▼省電20%↘涼爽5折up▼冷凝墊↘$499▼隨行風扇買1送1▼冰風扇65折</string>
+    <string name="str_notification_body_2">XXX今天生日，你要幫他慶生嗎</string>
     <string name="btn_remote_left">打開訊息</string>
     <string name="btn_remote_right">另開網頁</string>
+    <string name="friend">朋友近況</string>
 </resources>

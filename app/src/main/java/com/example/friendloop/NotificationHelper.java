@@ -31,11 +31,11 @@ public class NotificationHelper extends ContextWrapper
     {
         super(ctx);
 
-        NotificationChannel channelA = null;
-        // TO DO
-        channelA = new NotificationChannel(PRIMARY_CHANNEL,getString(R.string.str_primary_notification),
-                NotificationManager.IMPORTANCE_DEFAULT);
-        getManager().createNotificationChannel(channelA);
+//        NotificationChannel channelA = null;
+//        // TO DO
+//        channelA = new NotificationChannel(PRIMARY_CHANNEL,getString(R.string.str_primary_notification),
+//                NotificationManager.IMPORTANCE_DEFAULT);
+//        getManager().createNotificationChannel(channelA);
 
         NotificationChannel channelB = null;
         // TO DO
@@ -44,32 +44,32 @@ public class NotificationHelper extends ContextWrapper
         getManager().createNotificationChannel(channelB);
     }
 
-    public Notification getNotification1(String title, String body)
-    {
-        Intent intent = new Intent(this, my_msg_handler.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        // TO DO
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.EXTRA_NOTIFICATION_MSG,body);
-        intent.putExtras(bundle);
-
-        PendingIntent pendingintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.notificationbg);
-
-        Notification notification = null;
-        // TO DO
-        notification = new NotificationCompat.Builder(getApplicationContext(),PRIMARY_CHANNEL)
-                .setSmallIcon(R.drawable.sms)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setLargeIcon(icon)
-                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(icon))
-                .setContentIntent(pendingintent)
-                .setAutoCancel(true)
-                .build();
-
-        return notification;
-    }
+//    public Notification getNotification1(String title, String body)
+//    {
+//        Intent intent = new Intent(this, my_msg_handler.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        // TO DO
+//        Bundle bundle = new Bundle();
+//        bundle.putString(Constants.EXTRA_NOTIFICATION_MSG,body);
+//        intent.putExtras(bundle);
+//
+//        PendingIntent pendingintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.notificationbg);
+//
+//        Notification notification = null;
+//        // TO DO
+//        notification = new NotificationCompat.Builder(getApplicationContext(),PRIMARY_CHANNEL)
+//                .setSmallIcon(R.drawable.sms)
+//                .setContentTitle(title)
+//                .setContentText(body)
+//                .setLargeIcon(icon)
+//                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(icon))
+//                .setContentIntent(pendingintent)
+//                .setAutoCancel(true)
+//                .build();
+//
+//        return notification;
+//    }
 
     public Notification getNotification2(String title, String body, String strUri)
     {

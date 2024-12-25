@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity{
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             //一天提醒一次生日
             BirthdayNotification();
+
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -70,7 +72,11 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void BirthdayNotification() {
-        // 設置定期任務，每天執行一次
+        // 一次性執行任務（啟動時立即執行）
+        OneTimeWorkRequest immediateWorkRequest = new OneTimeWorkRequest.Builder(BirthdayNotificationManager.class).build();
+        WorkManager.getInstance(getApplicationContext()).enqueue(immediateWorkRequest);
+
+        // 定期執行任務（每天檢查一次）
         PeriodicWorkRequest birthdayWorkRequest = new PeriodicWorkRequest.Builder(
                 BirthdayNotificationManager.class,
                 1, // 每1天執行一次
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity{
         WorkManager.getInstance(getApplicationContext())
                 .enqueueUniquePeriodicWork(
                         "BirthdayReminderWork",
-                        ExistingPeriodicWorkPolicy.REPLACE,
+                        ExistingPeriodicWorkPolicy.KEEP,
                         birthdayWorkRequest
                 );
     }

@@ -28,8 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import android.Manifest;
 import androidx.annotation.NonNull;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity{
     RecyclerView mFriendRecyclerView;
@@ -46,6 +52,9 @@ public class MainActivity extends AppCompatActivity{
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            //一天提醒一次生日
+            BirthdayNotification();
+
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -60,6 +69,26 @@ public class MainActivity extends AppCompatActivity{
 //        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
         initSharedPreferences();
         initFloatingActionButton();
+    }
+
+    private void BirthdayNotification() {
+        // 一次性執行任務（啟動時立即執行）
+        OneTimeWorkRequest immediateWorkRequest = new OneTimeWorkRequest.Builder(BirthdayNotificationManager.class).build();
+        WorkManager.getInstance(getApplicationContext()).enqueue(immediateWorkRequest);
+
+        // 定期執行任務（每天檢查一次）
+        PeriodicWorkRequest birthdayWorkRequest = new PeriodicWorkRequest.Builder(
+                BirthdayNotificationManager.class,
+                1, // 每1天執行一次
+                TimeUnit.DAYS
+        ).build();
+
+        WorkManager.getInstance(getApplicationContext())
+                .enqueueUniquePeriodicWork(
+                        "BirthdayReminderWork",
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        birthdayWorkRequest
+                );
     }
 
     @Override

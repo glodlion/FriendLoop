@@ -6,8 +6,11 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,19 +21,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FriendLoop"
         tools:targetApi="31">
+        <activity
+            android:name=".ScannerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
         <service android:name=".NotificationIntentService" />
+
         <activity
             android:name=".my_msg_handler"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Test"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".EditInfomation"
             android:exported="false" />
@@ -40,16 +43,56 @@
         <activity
             android:name=".PersonalActivity"
             android:exported="false" />
+
+
         <activity
             android:name=".AddFriendActivity"
-            android:exported="false" />
+            android:exported="true" >
+        <intent-filter>
+
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <!-- 定義 URI 資訊 -->
+            <data
+                android:scheme="friendloop"
+                android:host="friend"
+                android:path="/add" />
+        </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".MainActivity"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
+            <intent-filter>
 
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- 定義 URI 資訊 -->
+                <data
+                    android:scheme="friendloop"
+                    android:host="friend"
+                    android:path="/"
+                  />
+            </intent-filter>
         </activity>
-        <receiver android:name="NotificationDismissReceiver"
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="android:screenOrientation"
+            android:stateNotNeeded="true"/>
+
+        <receiver
+            android:name=".NotificationDismissReceiver"
             android:exported="false" />
     </application>
 

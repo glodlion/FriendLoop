@@ -5,14 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QrActivity">
+    tools:context=".ScannerActivity">
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="177dp"
-        android:layout_height="97dp"
-        android:text="@string/Scanning"
-        tools:layout_editor_absoluteX="103dp"
-        tools:layout_editor_absoluteY="489dp"
-        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

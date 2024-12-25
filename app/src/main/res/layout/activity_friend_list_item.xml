@@ -19,26 +19,27 @@
 
         <ImageView
             android:id="@+id/friendPicture"
-            android:layout_width="10dp"
+            android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="1"
+            android:layout_weight="0.15"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/friendName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:gravity="center|left"
             android:text="TextView"
             android:textSize="30sp" />
 
         <ImageView
             android:id="@+id/more"
-            android:layout_width="10dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1"
+            android:layout_weight="0.15"
+            android:onClick="onDotClick"
             app:srcCompat="@drawable/dot" />
 
     </LinearLayout>

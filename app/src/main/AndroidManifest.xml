@@ -28,9 +28,8 @@
             android:exported="false" />
         <activity
             android:name=".Test"
-            android:exported="false">
-           
-        </activity>
+            android:exported="false"/>
+
         <activity
             android:name=".EditInfomation"
             android:exported="false" />
@@ -51,8 +50,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
         <receiver android:name="NotificationDismissReceiver"
             android:exported="false" />

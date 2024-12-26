@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
     <application
@@ -23,14 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FriendLoop"
         tools:targetApi="31">
-        <service android:name=".NotificationIntentService" />
-        <activity
-            android:name=".my_msg_handler"
-            android:exported="false" />
-        <activity
-            android:name=".Test"
-            android:exported="false"/>
-
         <activity
             android:name=".EditInfomation"
             android:exported="false" />
@@ -54,12 +47,8 @@
         </activity>
         <receiver android:name="NotificationDismissReceiver"
             android:exported="false" />
-        <receiver android:name=".BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".BirthdayNotificationReceiver" />
+
 
     </application>
 

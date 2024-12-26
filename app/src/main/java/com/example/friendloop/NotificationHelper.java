@@ -4,25 +4,14 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
-
-import com.example.friendloop.Constants;
-import com.example.friendloop.R;
-import com.example.friendloop.my_msg_handler;
-import android.net.Uri;
-import com.example.friendloop.NotificationDismissReceiver;
 
 public class NotificationHelper extends ContextWrapper
 {

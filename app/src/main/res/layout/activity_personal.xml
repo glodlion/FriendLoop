@@ -61,6 +61,14 @@
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     tools:srcCompat="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/friendIntimacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="100dp"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
 
             <TextView

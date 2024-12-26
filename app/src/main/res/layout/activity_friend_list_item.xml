@@ -21,7 +21,7 @@
             android:id="@+id/friendPicture"
             android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="0.15"
+            android:layout_weight="0.1"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
@@ -29,16 +29,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_weight="0.25"
             android:gravity="center|left"
             android:text="TextView"
             android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/friendIntimacy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.05"
+            android:gravity="center" />
 
         <ImageView
             android:id="@+id/more"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="0.15"
+            android:layout_weight="0.1"
             android:onClick="onDotClick"
             app:srcCompat="@drawable/dot" />
 

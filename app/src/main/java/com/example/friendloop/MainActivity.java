@@ -1,6 +1,7 @@
 package com.example.friendloop;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -259,13 +260,14 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void addData(String uri, String name, String phone, String birthday, String preference){
+    private void addData(String uri, String name, String phone, String birthday, String preference, String intimacy){
         Friend friend = new Friend();
         friend.setPicture(uri);
         friend.setName(name);  //命名
         friend.setPhone(phone);
         friend.setBirthday(birthday);
         friend.setPreferences(preference);
+        friend.setIntimacy(intimacy);
         Log.d("DEBUG", "1 Dataset size: " + mDataset.size());
         mDataset.add(friend);
         Log.d("DEBUG", "2 Dataset size: " + mDataset.size());
@@ -328,12 +330,13 @@ public class MainActivity extends AppCompatActivity{
             String phone = data.getStringExtra("phone");
             String birthdayString = data.getStringExtra("birthday");
             String preference = data.getStringExtra("preference");
+            String intimacy = data.getStringExtra("intimacy");
 
-            Friend friend = new Friend(name, uri , phone , birthdayString , preference);
+            Friend friend = new Friend(name, uri , phone , birthdayString , preference, intimacy);
 
             mSqlDataBaseHelper.addContact(friend);
           
-            addData(uri, name, phone, birthdayString, preference);
+            addData(uri, name, phone, birthdayString, preference, intimacy);
         }
     }
 

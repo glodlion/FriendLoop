@@ -30,7 +30,7 @@ public class BirthdayNotificationReceiver extends BroadcastReceiver {
         PeriodicWorkRequest birthdayWorkRequest = new PeriodicWorkRequest.Builder(
                 BirthdayNotificationManager.class,
                 1, // 每1天執行一次
-                TimeUnit.DAYS
+                TimeUnit.MINUTES
         ).build();
 
         WorkManager.getInstance(context.getApplicationContext())

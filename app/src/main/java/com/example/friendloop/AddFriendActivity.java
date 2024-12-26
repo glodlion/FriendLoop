@@ -127,6 +127,7 @@ public class AddFriendActivity extends AppCompatActivity {
         bundle.putString("phone", phone);
         bundle.putString("birthday", birthdayString);
         bundle.putString("preference", preference);
+        bundle.putString("intimacy", "100");
         intent.putExtras(bundle);
         setResult(100, intent);
     }
@@ -156,6 +157,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
     public void onAddClick(View view) {
         saveFriendInfo();
+        //開始親密度計時，每10秒下降10點
         finish();
     }
 }

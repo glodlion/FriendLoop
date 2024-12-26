@@ -7,10 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +21,8 @@ import com.bumptech.glide.Glide;
 public class PersonalActivity extends AppCompatActivity {
 
     ImageView mPersonalPicture;
-    TextView mPersonalName, mPersonalPhone, mPersonalBirthday, mPersonalPreferences, mTitle;
-    String name, phone, birthday, preference, picture;
+    TextView mPersonalName, mPersonalPhone, mPersonalBirthday, mPersonalPreferences, mPersonalIntimacy, mTitle;
+    String name, phone, birthday, preference, picture, intimacy;
     int state, pos;
     SharedPreferences sharedPreferences;
 
@@ -50,6 +48,7 @@ public class PersonalActivity extends AppCompatActivity {
         mPersonalPhone = findViewById(R.id.personalPhone);
         mPersonalBirthday = findViewById(R.id.personalBirthday);
         mPersonalPreferences = findViewById(R.id.personalPreferences);
+        mPersonalIntimacy = findViewById(R.id.friendIntimacy);
         mTitle = findViewById(R.id.textView2);
     }
 
@@ -108,6 +107,7 @@ public class PersonalActivity extends AppCompatActivity {
                 int phoneIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PHONE);
                 int birthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
                 int preferenceIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PREFERENCES);
+                int intimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
 
                 // 根據索引取得資料
                 name = (nameIndex >= 0) ? cursor.getString(nameIndex) : "Default Name";
@@ -115,6 +115,7 @@ public class PersonalActivity extends AppCompatActivity {
                 phone = (phoneIndex >= 0) ? cursor.getString(phoneIndex) : "Default Phone";
                 birthday = (birthdayIndex >= 0) ? cursor.getString(birthdayIndex) : "Default Birthday";
                 preference = (preferenceIndex >= 0) ? cursor.getString(preferenceIndex) : "Default Preference";
+                intimacy = (intimacyIndex >= 0) ? cursor.getString(intimacyIndex) : "0";
                 // 關閉 Cursor
                 cursor.close();
                 String path = "android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground;
@@ -130,6 +131,7 @@ public class PersonalActivity extends AppCompatActivity {
                 mPersonalPhone.setText(phone);
                 mPersonalBirthday.setText(birthday);
                 mPersonalPreferences.setText(preference);
+                mPersonalIntimacy.setText(intimacy);
             }
         }
     }
@@ -150,6 +152,7 @@ public class PersonalActivity extends AppCompatActivity {
         bundle.putString("phone", phone);
         bundle.putString("birthday", birthday);
         bundle.putString("preference", preference);
+        bundle.putString("intimacy", intimacy);
         intent.putExtras(bundle);
         startActivity(intent);
     }

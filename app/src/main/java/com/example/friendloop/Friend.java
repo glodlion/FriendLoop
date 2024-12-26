@@ -8,6 +8,7 @@ public class Friend {
     private String mPhone;
     private String mBirthday;
     private String mPreferences;
+    private String mIntimacy;
 
     public Friend() {
         this.mPicture = "android.resource://com.example.friendloop/" + R.drawable.ic_android_;
@@ -15,14 +16,16 @@ public class Friend {
         this.mPhone = "000-000-0000";
         this.mBirthday = "2000-01-01";
         this.mPreferences = "Default Preferences";
+        this.mIntimacy = "100";
     }
 
-    public Friend( String name ,String picture, String phone, String birthday, String preferences) {
+    public Friend( String name ,String picture, String phone, String birthday, String preferences, String intimacy) {
         this.mPicture = picture;
         this.mName = name;
         this.mPhone = phone;
         this.mBirthday = birthday;
         this.mPreferences = preferences;
+        this.mIntimacy = intimacy;
     }
     public String getPicture()
     {
@@ -64,7 +67,6 @@ public class Friend {
         this.mBirthday = birthday;
     }
 
-
     public String getPreferences()
     {
         return mPreferences;
@@ -75,5 +77,13 @@ public class Friend {
         this.mPreferences = preferences;
     }
 
+    public String getIntimacy()
+    {
+        return mIntimacy;
+    }
 
+    public void setIntimacy(String intimacy)
+    {
+        this.mIntimacy = intimacy;
+    }
 }

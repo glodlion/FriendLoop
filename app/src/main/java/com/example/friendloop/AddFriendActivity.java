@@ -62,6 +62,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
         init();
         GetIntentValue();//當網頁跳轉有亂碼時去雲端取資料並自動輸入
+
         mChooseBirthday.setOnClickListener(view -> showDatePickerDialog());
     }
 
@@ -69,6 +70,9 @@ public class AddFriendActivity extends AppCompatActivity {
 
 
 
+
+/*                        以下為新增，為了讀取資料處理
+ */
 
     private void GetIntentValue(){
 
@@ -117,6 +121,8 @@ public class AddFriendActivity extends AppCompatActivity {
         });
     }
 
+    /*                        以上為新增
+     */
 
 
     private void init(){

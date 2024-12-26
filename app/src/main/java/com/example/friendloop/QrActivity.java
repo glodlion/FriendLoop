@@ -75,9 +75,10 @@ public class QrActivity extends AppCompatActivity {
                 // 顯示掃描結果
                 String qrCodeContent = result.getContents();
 
-                if (qrCodeContent.startsWith("friendloop://add")) {
+                if (qrCodeContent.startsWith("friendloop://friend/")) {
 
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(qrCodeContent));
+
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }else{

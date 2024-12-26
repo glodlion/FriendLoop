@@ -58,7 +58,7 @@
                 <!-- 定義 URI 資訊, Deep link , 用來qrcode 導向 -->
                 <data
                     android:host="friend"
-                    android:path="/add"
+                    android:pathPrefix="/add"
                     android:scheme="friendloop" />
             </intent-filter>
         </activity>

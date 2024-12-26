@@ -49,30 +49,25 @@ public class QrcodeGenrate extends AppCompatActivity {
 
 
         //上傳至Firebase
-        Log.i("test", "test");
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Data");
-
-
         DatabaseReference newRef = myRef.push();
-
-
         TemData temData = new TemData(name, phone, birthday, preference);
-
-
         newRef.setValue(temData)
                 .addOnSuccessListener(aVoid -> {
                     key = newRef.getKey();
-                    Log.d("Firebase", "資料儲存成功，ID: " +key);
+                    Log.d("Firebase", "資料儲存成功，ID: " + key);
+                    String s = "friendloop://friend/add/" + key;
+                    Bitmap bitmap = generateQRCode(s, 100, 100);
+                    BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
+                    imageView.setImageDrawable(drawable);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "資料儲存失敗", e);
                 });
 
 
-        Bitmap bitmap =  generateQRCode("friendloop://test" ,100 , 100);
-        BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
-        imageView.setImageDrawable(drawable);
 
     }
 

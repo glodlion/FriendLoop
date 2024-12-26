@@ -30,6 +30,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +48,7 @@ public class AddFriendActivity extends AppCompatActivity {
     TextView mAddActivityFriendBirthday;
     ImageView mFriendPicture;
     Uri uri;
-
+    TemData temData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +61,63 @@ public class AddFriendActivity extends AppCompatActivity {
         });
 
         init();
-
+        GetIntentValue();//當網頁跳轉有亂碼時去雲端取資料並自動輸入
         mChooseBirthday.setOnClickListener(view -> showDatePickerDialog());
     }
+
+
+
+
+
+
+    private void GetIntentValue(){
+
+        String id ="";
+        // 接收 Intent
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        if (data != null) {
+            String qrCodeContent = data.toString(); // 獲取完整的 URI
+            id = extractIdFromUri(qrCodeContent); // 提取 ID
+
+        }
+        fetchDataFromFirebase(id);
+
+    }
+    private String extractIdFromUri(String qrCodeContent) {
+        if (qrCodeContent.startsWith("friendloop://friend/add/")) {
+            return qrCodeContent.substring("friendloop://friend/add/".length());
+        }
+        return ""; // 返回空字符串，表示提取失敗
+    }
+    private void fetchDataFromFirebase(String id) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Data").child(id);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 將資料轉換為 TemData 對象
+                    temData = dataSnapshot.getValue(TemData.class);  //填入資料
+                    mAddActivityFriendName.setText(temData.mName);
+                    mAddActivityFriendBirthday.setText(temData.mBirthday);
+                    mAddActivityFriendPhone.setText(temData.mPhone);
+                    mAddActivityFriendPreferences.setText(temData.mPreferences);
+
+                } else {
+                    Log.e("Firebase", "資料不存在");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Firebase", "資料獲取失敗", databaseError.toException());
+            }
+        });
+    }
+
+
 
     private void init(){
         mChooseBirthday = findViewById(R.id.chooseBirthday);
@@ -149,6 +209,8 @@ public class AddFriendActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
     public void onCancelClick(View view) {
         finish();

@@ -34,7 +34,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        private final TextView mFriendName;
+        private final TextView mFriendName, mFriendIntimacy;
         private final ImageView mFriendPicture;
         private final ImageView mMore;
 //        private final LinearLayout mListItem;
@@ -46,6 +46,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
             // TO DO
             //因為是在另一個xml，因此findViewById需要前面加上view
             mFriendName = (TextView) view.findViewById(R.id.friendName);
+            mFriendIntimacy = (TextView) view.findViewById(R.id.friendIntimacy);
             mFriendPicture = (ImageView) view.findViewById(R.id.friendPicture);
             mMore = (ImageView) view.findViewById(R.id.more);
 //            mListItem = (LinearLayout) view.findViewById(R.id.list_item);
@@ -176,6 +177,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                 .load(Uri.parse(friend.getPicture()))  // 這是圖片的 URI
                 .override(500, 500)
                 .into(viewHolder.mFriendPicture);  // 設置圖片到 ImageView
+        viewHolder.mFriendIntimacy.setText(friend.getIntimacy());
     }
 
     public void removeItem(int position) {

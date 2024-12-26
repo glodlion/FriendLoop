@@ -1,12 +1,20 @@
 package com.example.friendloop;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,8 +36,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
 import android.Manifest;
 import androidx.annotation.NonNull;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity{
     RecyclerView mFriendRecyclerView;
@@ -39,13 +54,27 @@ public class MainActivity extends AppCompatActivity{
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected SqlDataBaseHelper mSqlDataBaseHelper;
 
-
+//    private Handler handler = new Handler();
+//    private Runnable birthdayRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            BirthdayNotification(getApplicationContext()); // 調用您的提醒方法
+//            handler.postDelayed(this, 10*1000); // 24 小時後再次執行
+//        }
+//    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+
+//            // 啟動定時任務
+//            Log.d("alarm","啟動計時");
+//            // 創建通知通道
+//            createNotificationChannel();
+//            handler.post(birthdayRunnable);
+
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -60,6 +89,93 @@ public class MainActivity extends AppCompatActivity{
 //        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
         initSharedPreferences();
         initFloatingActionButton();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("alarm", "onDestroy 被調用，開始設置 24 小時後的提醒");
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            // 設定 24 小時後執行
+            long triggerTime = System.currentTimeMillis() + 10*1000;
+
+            Intent intent = new Intent(this, BirthdayNotificationReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+            Log.d("alarm", "AlarmManager 已設置，24 小時後觸發");
+        }
+    }
+    private void createNotificationChannel() {
+        // 僅在 Android 8.0（API 26）及以上版本需要創建通知通道
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "default"; // 與通知中指定的 channelId 一致
+            String channelName = "Birthday Notification";
+            String channelDescription = "提醒朋友的生日通知";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.setDescription(channelDescription);
+
+            // 註冊通知通道
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+//    private void setupDailyAlarm() {
+//        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+//        boolean isAlarmSet = prefs.getBoolean("isAlarmSet", false);
+//        BirthdayNotification(this);
+//        if (!isAlarmSet) {
+//            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.set(Calendar.HOUR_OF_DAY, 9);
+//            calendar.set(Calendar.MINUTE, 0);
+//            calendar.set(Calendar.SECOND, 0);
+//
+//            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+//                calendar.add(Calendar.DAY_OF_YEAR, 1);
+//            }
+//            Intent intent = new Intent(this, BirthdayNotificationReceiver.class);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+//                    this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+//
+//            if (alarmManager != null) {
+//                alarmManager.setRepeating(
+//                        AlarmManager.RTC_WAKEUP,
+//                        calendar.getTimeInMillis(),
+//                        AlarmManager.INTERVAL_DAY,
+//                        pendingIntent
+//                );
+//            }
+//            // 更新 SharedPreferences，標記 Alarm 已設置
+//            prefs.edit().putBoolean("isAlarmSet", true).apply();
+//        }
+//    }
+
+    private void BirthdayNotification(Context context) {
+        // 一次性執行任務（啟動時立即執行）
+        OneTimeWorkRequest immediateWorkRequest = new OneTimeWorkRequest.Builder(BirthdayNotificationManager.class).build();
+        WorkManager.getInstance(context.getApplicationContext()).enqueue(immediateWorkRequest);
+
+        // 定期執行任務（每天檢查一次）
+        PeriodicWorkRequest birthdayWorkRequest = new PeriodicWorkRequest.Builder(
+                BirthdayNotificationManager.class,
+                1, // 每1天執行一次
+                TimeUnit.DAYS
+        ).build();
+
+        WorkManager.getInstance(context.getApplicationContext())
+                .enqueueUniquePeriodicWork(
+                        "BirthdayReminderWork",
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        birthdayWorkRequest
+                );
     }
 
     @Override
@@ -144,13 +260,14 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void addData(String uri, String name, String phone, String birthday, String preference){
+    private void addData(String uri, String name, String phone, String birthday, String preference, String intimacy){
         Friend friend = new Friend();
         friend.setPicture(uri);
         friend.setName(name);  //命名
         friend.setPhone(phone);
         friend.setBirthday(birthday);
         friend.setPreferences(preference);
+        friend.setIntimacy(intimacy);
         Log.d("DEBUG", "1 Dataset size: " + mDataset.size());
         mDataset.add(friend);
         Log.d("DEBUG", "2 Dataset size: " + mDataset.size());
@@ -213,12 +330,13 @@ public class MainActivity extends AppCompatActivity{
             String phone = data.getStringExtra("phone");
             String birthdayString = data.getStringExtra("birthday");
             String preference = data.getStringExtra("preference");
+            String intimacy = data.getStringExtra("intimacy");
 
-            Friend friend = new Friend(name, uri , phone , birthdayString , preference);
+            Friend friend = new Friend(name, uri , phone , birthdayString , preference, intimacy);
 
             mSqlDataBaseHelper.addContact(friend);
           
-            addData(uri, name, phone, birthdayString, preference);
+            addData(uri, name, phone, birthdayString, preference, intimacy);
         }
     }
 

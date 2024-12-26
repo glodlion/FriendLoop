@@ -19,58 +19,45 @@ public class BirthdayNotificationManager extends  Worker{
 
     public BirthdayNotificationManager(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        mNotiHelper = new NotificationHelper(context);
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        // 獲取今天的日期
-        String today = new SimpleDateFormat("MM-dd", Locale.getDefault()).format(new Date());
-        // 初始化資料庫助手
+        Log.d("BirthdayNotification", "doWork() 被執行");
         SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(getApplicationContext());
-
-
-        // 查詢今天生日的朋友
         Cursor cursor = null;
+
         try {
             cursor = dbHelper.getTodayBirthdays();
-
-            // 如果有結果，遍歷資料並發送通知
             if (cursor != null && cursor.moveToFirst()) {
+                Log.d("BirthdayNotification", "找到生日資料");
                 do {
-                    // 檢查欄位索引是否正確
                     int nameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
                     int birthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
 
-                    // 如果欄位索引有效
                     if (nameIndex != -1 && birthdayIndex != -1) {
-                        // 獲取朋友的名字和生日
                         String friendName = cursor.getString(nameIndex);
                         String birthday = cursor.getString(birthdayIndex);
-
-                        // 發送通知
-                        sendBirthdayNotification(friendName, birthday);
-                    } else {
-                        Log.e("BirthdayWorker", "欄位索引無效，請檢查資料表結構和查詢語句！");
+                        Log.d("BirthdayNotification", "朋友: " + friendName + "，生日: " + birthday);
+                        sendBirthdayNotification(friendName);
                     }
                 } while (cursor.moveToNext());
-            } else {
-                Log.d("BirthdayWorker", "今天沒有朋友生日！");
+            }else{
+                Log.d("BirthdayNotification", "今天沒有朋友生日");
             }
         } catch (Exception e) {
-            Log.e("BirthdayWorker", "查詢資料庫時發生錯誤：", e);
+            Log.e("BirthdayNotification", "Error checking birthdays", e);
         } finally {
-            // 確保游標被關閉
-            if (cursor != null) {
-                cursor.close();
-            }
+            if (cursor != null) cursor.close();
         }
 
         return Result.success();
     }
-    public void sendBirthdayNotification(String friendName, String birthday)
+    public void sendBirthdayNotification(String friendName)
     {
-
+        Log.d("BirthdayNotification", "發送通知給: " + friendName);
         String title = "生日提醒";
         String body = friendName + " 今天生日！快去祝福吧！";
         String imageUri = "https://example.com/birthday_image"; // 可以更換成您的圖片

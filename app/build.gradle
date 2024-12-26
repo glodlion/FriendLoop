@@ -54,4 +54,5 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'com.github.bumptech.glide:glide:4.15.1'  // 這是最新的穩定版本
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'  // Glide 編譯器，生成必要的代碼
+    implementation "androidx.work:work-runtime:2.3.1"
 }

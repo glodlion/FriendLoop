@@ -26,6 +26,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PHONE = "phone";
     public static final String COLUMN_BIRTHDAY = "birthday";
     public static final String COLUMN_PREFERENCES = "preferences";
+    public static final String COLUMN_INTIMACY = "intimacy";
 
     // 建立資料表的 SQL 語句
     public static final String CREATE_TABLE_CONTACTS =
@@ -35,7 +36,8 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
                     COLUMN_IMAGE_URI + " TEXT, " +  // 新增此欄位
                     COLUMN_PHONE + " TEXT, " +
                     COLUMN_BIRTHDAY + " TEXT, " +
-                    COLUMN_PREFERENCES + " TEXT);";
+                    COLUMN_PREFERENCES + " TEXT, " +
+                    COLUMN_INTIMACY + " TEXT);";
 
     public SqlDataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -89,6 +91,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_BIRTHDAY, friend.getBirthday());
         values.put(COLUMN_PREFERENCES, friend.getPreferences());
         values.put(COLUMN_IMAGE_URI, friend.getPicture());
+        values.put(COLUMN_INTIMACY, friend.getIntimacy());
 
         return db.update(TABLE_CONTACTS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
@@ -106,6 +109,7 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_BIRTHDAY, friend.getBirthday());
             values.put(COLUMN_IMAGE_URI , friend.getPicture());
             values.put(COLUMN_PREFERENCES, friend.getPreferences());
+            values.put(COLUMN_INTIMACY, friend.getIntimacy());
             result = db.insert(TABLE_CONTACTS, null, values);
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,7 +149,8 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
                 + COLUMN_IMAGE_URI + " TEXT, "
                 + COLUMN_PHONE + " TEXT, "
                 + COLUMN_BIRTHDAY + " TEXT, "
-                + COLUMN_PREFERENCES + " TEXT)";
+                + COLUMN_PREFERENCES + " TEXT, "
+                + COLUMN_INTIMACY + " TEXT)";
         db.execSQL(createMainTable);
 
         // 5. 將資料從臨時表格插入到主表，排除自動生成的 COLUMN_ID
@@ -154,13 +159,15 @@ public class SqlDataBaseHelper extends SQLiteOpenHelper {
                 + COLUMN_IMAGE_URI + ", "
                 + COLUMN_PHONE + ", "
                 + COLUMN_BIRTHDAY + ", "
-                + COLUMN_PREFERENCES + ") "
+                + COLUMN_PREFERENCES + ", "
+                + COLUMN_INTIMACY + ") "
                 + "SELECT "
                 + COLUMN_NAME + ", "
                 + COLUMN_IMAGE_URI + ", "
                 + COLUMN_PHONE + ", "
                 + COLUMN_BIRTHDAY + ", "
-                + COLUMN_PREFERENCES + " FROM temp_contacts";
+                + COLUMN_PREFERENCES + ", "
+                + COLUMN_INTIMACY + " FROM temp_contacts";
         db.execSQL(insertFromTemp);
 
         // 6. 刪除臨時表格

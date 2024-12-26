@@ -37,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
@@ -54,26 +55,12 @@ public class MainActivity extends AppCompatActivity{
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected SqlDataBaseHelper mSqlDataBaseHelper;
 
-//    private Handler handler = new Handler();
-//    private Runnable birthdayRunnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            BirthdayNotification(getApplicationContext()); // 調用您的提醒方法
-//            handler.postDelayed(this, 10*1000); // 24 小時後再次執行
-//        }
-//    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-
-//            // 啟動定時任務
-//            Log.d("alarm","啟動計時");
-//            // 創建通知通道
-//            createNotificationChannel();
-//            handler.post(birthdayRunnable);
 
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -94,19 +81,41 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("alarm", "onDestroy 被調用，開始設置 24 小時後的提醒");
+        Log.d("alarm", "onDestroy 被調用，設置 1 分鐘後的提醒");
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
-            // 設定 24 小時後執行
-            long triggerTime = System.currentTimeMillis() + 10*1000;
+            // 設置觸發時間為當前時間的 1 分鐘後
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 0); // 設置小時為 0 (12:00 AM)
+            calendar.set(Calendar.MINUTE, 0);     // 設置分鐘為 0
+            calendar.set(Calendar.SECOND, 0); // 秒設置為 0
+            calendar.set(Calendar.MILLISECOND, 0); // 毫秒設置為 0
+            // 如果當前時間已經過了今天的 0:00，設置為明天的 0:00
+            if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+                calendar.add(Calendar.DAY_OF_YEAR, 1); // 日期加 1 天
+            }
 
+            long triggerTime = calendar.getTimeInMillis();
+            Log.d("alarm", "AlarmManager 設置的觸發時間：" + new Date(triggerTime).toString());
+
+            // 創建 PendingIntent
             Intent intent = new Intent(this, BirthdayNotificationReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
 
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-            Log.d("alarm", "AlarmManager 已設置，24 小時後觸發");
+            // 設置 AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+            );
+
+            Log.d("alarm", "AlarmManager 已設置，將在 1 分鐘後觸發");
         }
     }
     private void createNotificationChannel() {

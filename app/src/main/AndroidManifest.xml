@@ -22,9 +22,12 @@
         android:theme="@style/Theme.FriendLoop"
         tools:targetApi="31">
         <activity
+            android:name=".QrcodeGenrate"
+            android:exported="false" />
+        <activity
             android:name=".ScannerActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <service android:name=".NotificationIntentService" />
 
@@ -33,7 +36,7 @@
             android:exported="true" />
         <activity
             android:name=".Test"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".EditInfomation"
             android:exported="false" />
@@ -43,53 +46,48 @@
         <activity
             android:name=".PersonalActivity"
             android:exported="false" />
-
-
         <activity
             android:name=".AddFriendActivity"
-            android:exported="true" >
-        <intent-filter>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-            <!-- 定義 URI 資訊 -->
-            <data
-                android:scheme="friendloop"
-                android:host="friend"
-                android:path="/add" />
-        </intent-filter>
+                <!-- 定義 URI 資訊, Deep link , 用來qrcode 導向 -->
+                <data
+                    android:host="friend"
+                    android:path="/add"
+                    android:scheme="friendloop" />
+            </intent-filter>
         </activity>
-
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
-
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- 定義 URI 資訊 -->
+                <!-- 定義 URI 資訊, Deep link , 用來qrcode 導向 -->
                 <data
-                    android:scheme="friendloop"
                     android:host="friend"
                     android:path="/"
-                  />
+                    android:scheme="friendloop" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
-            tools:replace="android:screenOrientation"
-            android:stateNotNeeded="true"/>
+            android:stateNotNeeded="true"
+            tools:replace="android:screenOrientation" />
 
         <receiver
             android:name=".NotificationDismissReceiver"

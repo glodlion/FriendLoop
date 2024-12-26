@@ -16,4 +16,5 @@
     <string name="btn_remote_right">另開網頁</string>
     <string name="friend">朋友近況</string>
     <string name="Scanning">掃描</string>
+    <string name="Generate">生成</string>
 </resources>

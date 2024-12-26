@@ -19,7 +19,8 @@ import com.google.zxing.integration.android.IntentResult;
 public class QrActivity extends AppCompatActivity {
 
 
-    Button mButton;
+    Button mButtonScanner;
+    Button mButtonGenerate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +38,12 @@ public class QrActivity extends AppCompatActivity {
             return insets;
         });
 
-        mButton = findViewById(R.id.button3);
+        mButtonScanner = findViewById(R.id.button3);
+        mButtonGenerate = findViewById(R.id.button4);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
+
+
+        mButtonScanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 IntentIntegrator integrator = new IntentIntegrator(QrActivity.this);
@@ -50,6 +54,13 @@ public class QrActivity extends AppCompatActivity {
                             .setBeepEnabled(true)
                             .initiateScan(); // 啟動掃描
 
+            }
+        });
+        mButtonGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(QrActivity.this , QrcodeGenrate.class);
+                startActivity(intent);
             }
         });
 

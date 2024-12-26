@@ -11,8 +11,19 @@
         android:id="@+id/button3"
         android:layout_width="177dp"
         android:layout_height="97dp"
+        android:layout_marginTop="476dp"
         android:text="@string/Scanning"
-        tools:layout_editor_absoluteX="103dp"
-        tools:layout_editor_absoluteY="489dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="115dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="508dp"
+        android:text="@string/Generate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.friendloop" />
+                  <option name="mobileSdkAppId" value="1:576721169773:android:a39829eb4e319ed5f9be64" />
+                  <option name="projectId" value="friendloop-3d9bc" />
+                  <option name="projectNumber" value="576721169773" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -26,12 +26,6 @@ public class QrActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_qr);
-
-
-
-
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -40,8 +34,6 @@ public class QrActivity extends AppCompatActivity {
 
         mButtonScanner = findViewById(R.id.button3);
         mButtonGenerate = findViewById(R.id.button4);
-
-
 
         mButtonScanner.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,5 +82,9 @@ public class QrActivity extends AppCompatActivity {
                 Toast.makeText(this, "掃描取消", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void onBackClick(View view){
+        finish();
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -99,5 +100,9 @@ public class QrcodeGenrate extends AppCompatActivity {
         super.onResume();
         // 當 Activity 恢復時上傳資料
         uploadDataToFirebase();
+    }
+
+    public void onBackClick(View view){
+        finish();
     }
 }

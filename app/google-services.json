@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "576721169773",
+    "project_id": "friendloop-3d9bc",
+    "storage_bucket": "friendloop-3d9bc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576721169773:android:a39829eb4e319ed5f9be64",
+        "android_client_info": {
+          "package_name": "com.example.friendloop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUcC771ZnNHjD1fQfuAw_HDJySjSRvKjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

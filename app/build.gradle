@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.google.guava:guava:31.1-android' // 添加 Guava 庫
 
-    implementation 'androidx.work:work-runtime:2.7.1' // 替換成您需要的正確版本
+
 
     implementation 'com.google.firebase:firebase-database:21.0.0'
     implementation libs.appcompat

@@ -16,6 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.work.ListenableWorker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class TimerService extends Service implements Runnable{
 //    public static final String TAG = MyTimeWidget.TAG;
     public static final String CLICK_EVENT = "android.appwidget.action.Click";
@@ -38,7 +43,7 @@ public class TimerService extends Service implements Runnable{
     @Override
     public void run() {
         handler.sendEmptyMessage(1);
-        handler.postDelayed(this,60*1000);
+        handler.postDelayed(this,5*1000);
         Log.d("Timer", "run");
     }
 
@@ -66,25 +71,44 @@ public class TimerService extends Service implements Runnable{
     private void birthdaycheck() {
         Log.d("BirthdayNotification", "doWork() 被執行");
         SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(getApplicationContext());
-        Cursor cursor = null;
+        Cursor cursor = dbHelper.getAllContacts();
 
         try {
-            cursor = dbHelper.getTodayBirthdays();
             if (cursor != null && cursor.moveToFirst()) {
-                Log.d("BirthdayNotification", "找到生日資料");
                 do {
-                    int nameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
-                    int birthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
+                    Log.d("BirthdayNotification","開始判斷");
+                    int BirthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
+                    String BirthDay = BirthdayIndex < 0 ? "Default Value" : cursor.getString(BirthdayIndex);
+                    int NameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
+                    String Name = NameIndex < 0 ? "Default Value" : cursor.getString(NameIndex);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    // 將生日轉換為 Date 對象
+                    Date date = dateFormat.parse(BirthDay);
 
-                    if (nameIndex != -1 && birthdayIndex != -1) {
-                        String friendName = cursor.getString(nameIndex);
-                        String birthday = cursor.getString(birthdayIndex);
-                        Log.d("BirthdayNotification", "朋友: " + friendName + "，生日: " + birthday);
-                        sendBirthdayNotification(friendName);
+                    // 提取月份和日期
+                    SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+                    SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+
+                    String month = monthFormat.format(date); // 提取月份
+                    String day = dayFormat.format(date);     // 提取日期
+                    Log.d("BirthdayNotification","生日是"+month);
+                    Log.d("BirthdayNotification","生日是"+day);
+                    // 獲取當下的月份和日期
+                    Calendar today = Calendar.getInstance();
+                    String currentMonth = today.get(Calendar.MONTH) + 1 +""; // 月份需要加 1，因為 Calendar.MONTH 從 0 開始
+                    String currentDay = today.get(Calendar.DAY_OF_MONTH)+"";
+                    Log.d("BirthdayNotification","現在是"+currentMonth);
+                    Log.d("BirthdayNotification","現在是"+currentDay);
+                    if(month.equals(currentMonth))
+                    {
+                        if(currentDay.equals(day)){
+                            Log.d("BirthdayNotification","進去了1");
+                            sendBirthdayNotification(Name);
+                        }
                     }
+
                 } while (cursor.moveToNext());
-            }else{
-                Log.d("BirthdayNotification", "今天沒有朋友生日");
+                cursor.close();
             }
         } catch (Exception e) {
             Log.e("BirthdayNotification", "Error checking birthdays", e);
@@ -96,6 +120,10 @@ public class TimerService extends Service implements Runnable{
 
     public void sendBirthdayNotification(String friendName)
     {
+        if (mNotiHelper == null) {
+            mNotiHelper = new NotificationHelper(getApplicationContext());
+        }
+
         Log.d("BirthdayNotification", "發送通知給: " + friendName);
         String title = "生日提醒";
         String body = friendName + " 今天生日！快去祝福吧！";
@@ -121,11 +149,11 @@ public class TimerService extends Service implements Runnable{
 
     private void startForegroundNotification() {
         createNotificationChannel();
-        Notification notification = new NotificationCompat.Builder(this, "TimerServiceChannel")
-                .setContentTitle("Timer Service")
-                .setContentText("Service is running...")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .build();
-        startForeground(1, notification);
+        //Notification notification = new NotificationCompat.Builder(this, "TimerServiceChannel")
+         //       .setContentTitle("Timer Service")
+         //       .setContentText("Service is running...")
+         //       .setSmallIcon(R.drawable.ic_launcher_foreground)
+          //      .build();
+      //  startForeground(1, notification);
     }
 }

@@ -19,7 +19,6 @@ public class BirthdayNotificationManager extends  Worker{
 
     public BirthdayNotificationManager(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        mNotiHelper = new NotificationHelper(context);
     }
 
     @NonNull

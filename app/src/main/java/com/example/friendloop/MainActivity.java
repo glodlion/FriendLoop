@@ -269,21 +269,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void addData(String uri, String name, String phone, String birthday, String preference, String intimacy){
-        Friend friend = new Friend();
-        friend.setPicture(uri);
-        friend.setName(name);  //命名
-        friend.setPhone(phone);
-        friend.setBirthday(birthday);
-        friend.setPreferences(preference);
-        friend.setIntimacy(intimacy);
-        Log.d("DEBUG", "1 Dataset size: " + mDataset.size());
-        mDataset.add(friend);
-        Log.d("DEBUG", "2 Dataset size: " + mDataset.size());
-        // 通知 RecyclerView 更新新增的項目
-        mAdapter.notifyDataSetChanged();
-        mFriendRecyclerView.scrollToPosition(mDataset.size() - 1);
-    }
+
 
     public void initRecycleView()
     {
@@ -334,18 +320,7 @@ public class MainActivity extends AppCompatActivity{
         if (requestCode == 100 && resultCode == 100) {
             // 取得資料
 
-            String uri = data.getStringExtra("picture");
-            String name = data.getStringExtra("name");
-            String phone = data.getStringExtra("phone");
-            String birthdayString = data.getStringExtra("birthday");
-            String preference = data.getStringExtra("preference");
-            String intimacy = data.getStringExtra("intimacy");
 
-            Friend friend = new Friend(name, uri , phone , birthdayString , preference, intimacy);
-
-            mSqlDataBaseHelper.addContact(friend);
-          
-            addData(uri, name, phone, birthdayString, preference, intimacy);
         }
     }
 

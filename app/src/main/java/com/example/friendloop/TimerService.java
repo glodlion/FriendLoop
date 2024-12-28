@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -66,6 +68,7 @@ public class TimerService extends Service implements Runnable{
     private void update(){
         Log.d("Timer", "1");
         birthdaycheck();
+        Intimacy();
     }
 
     private void birthdaycheck() {
@@ -146,6 +149,93 @@ public class TimerService extends Service implements Runnable{
             manager.createNotificationChannel(channel);
         }
     }
+
+    private void Intimacy()
+    {
+        Log.d("Intimacy", "Intimacy 被執行");
+        SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getAllContacts();
+
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Log.d("Intimacy","開始讀取");
+                    int IntimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
+                    int NameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
+                    String Name = NameIndex < 0 ? "Default Value" : cursor.getString(NameIndex);
+                    if (IntimacyIndex >= 0) {
+                        String intimacyValue = cursor.getString(IntimacyIndex);
+
+                        try {
+                            // 將字串轉換為整數
+                            int intimacy = Integer.parseInt(intimacyValue);
+
+                            // 減去 5
+                            intimacy -= 5;
+
+                            // 確保數值不低於 0（可選）
+                            if(intimacy<60)
+                            {
+
+                                sendBreakNotification(Name);
+                            }
+
+                            // 將更新的值保存回資料庫
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(SqlDataBaseHelper.COLUMN_INTIMACY, intimacy);
+
+                            // 獲取資料庫寫入實例
+                            SQLiteDatabase db = dbHelper.getWritableDatabase();
+                            db.update(
+                                    SqlDataBaseHelper.TABLE_CONTACTS, // 替換為實際表名稱
+                                    contentValues,
+                                    SqlDataBaseHelper.COLUMN_ID + " = ?", // 替換為條件列
+                                    new String[]{cursor.getString(cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_ID))} // 替換為條件值
+                            );
+                            // 更新到新的字串
+                            String updatedIntimacyValue = String.valueOf(intimacy);
+
+                            // 印出更新後的值
+                            Log.d("Intimacy", "更新後的 Intimacy 值：" + updatedIntimacyValue);
+
+                        } catch (NumberFormatException e) {
+                            // 處理無法轉換為整數的情況
+                            Log.e("Intimacy", "Intimacy 值無法轉換為整數：" + intimacyValue, e);
+                        }
+                    } else {
+                        Log.d("Intimacy", "Intimacy 欄位不存在，使用預設值");
+                    }
+
+
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.e("Intimacy", "Error checking birthdays", e);
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+
+    }
+
+    public void sendBreakNotification(String friendName)
+    {
+        if (mNotiHelper == null) {
+            mNotiHelper = new NotificationHelper(getApplicationContext());
+        }
+
+        Log.d("Intimacy", "發送通知給: " + friendName);
+        String title = "好感度提醒";
+        String body = friendName + " 好感度已低於60，是否要增加一些互動?(若無互動可以Break)";
+        String imageUri = "https://example.com/birthday_image"; // 可以更換成您的圖片
+
+        Notification nb = mNotiHelper.getNotification2(title, body, strPromotionUri);
+        if (nb != null)
+        {
+            mNotiHelper.notify(NOTIFICATION_SECONDARY1, nb);
+        }
+    }
+
 
     private void startForegroundNotification() {
         createNotificationChannel();

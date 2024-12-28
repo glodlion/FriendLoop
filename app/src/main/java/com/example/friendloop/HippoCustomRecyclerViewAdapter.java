@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -86,25 +87,43 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                                 mContext.startActivity(intent);
                             } else if(item.getItemId() == R.id.option2){
                                 Toast.makeText(mContext, "Break", Toast.LENGTH_LONG).show();
-                                AlertDialog alertDialog = new AlertDialog.Builder(mContext)
-                                        .setTitle("你確定要\"Break\"好友嗎?")
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(mContext);
-                                                dbHelper.deleteContactAndResort(position+1);
-                                                adapter.removeItem(position);
-                                                ((MainActivity) mContext).initRecyclerView();
-                                                ((MainActivity) mContext).initRecycleView();
-                                            }
-                                        })
-                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // 建立 AlertDialog.Builder
+                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-                                            }
-                                        })
-                                        .show();
+// 載入自訂的佈局
+                                LayoutInflater inflater = LayoutInflater.from(mContext);
+                                View customView = inflater.inflate(R.layout.breakornot, null);
+
+// 設置自訂佈局到 AlertDialog
+                                builder.setView(customView);
+
+// 取得自訂佈局的元件
+                                // 建立對話框
+                                AlertDialog dialog = builder.create();
+                                TextView alertTitle = customView.findViewById(R.id.alertTitle);
+                                ImageButton positiveButton = customView.findViewById(R.id.positiveButton);
+                                ImageButton negativeButton = customView.findViewById(R.id.negativeButton);
+
+// 設置按鈕行為
+                                positiveButton.setOnClickListener(v -> {
+                                    // 執行刪除好友的操作
+                                    SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(mContext);
+                                    dbHelper.deleteContactAndResort(position + 1);
+                                    adapter.removeItem(position);
+                                    ((MainActivity) mContext).initRecyclerView();
+                                    ((MainActivity) mContext).initRecycleView();
+
+                                    // 關閉對話框
+                                    dialog.dismiss();
+                                });
+
+                                negativeButton.setOnClickListener(v -> {
+                                    // 按下 No 時關閉對話框
+                                    dialog.dismiss();
+                                });
+
+                                dialog.show();
+
                             }
 
                             return false;

@@ -43,7 +43,7 @@ public class TimerService extends Service implements Runnable{
     @Override
     public void run() {
         handler.sendEmptyMessage(1);
-        handler.postDelayed(this,60*1000);
+        handler.postDelayed(this,5*1000);
         Log.d("Timer", "run");
     }
 
@@ -120,6 +120,10 @@ public class TimerService extends Service implements Runnable{
 
     public void sendBirthdayNotification(String friendName)
     {
+        if (mNotiHelper == null) {
+            mNotiHelper = new NotificationHelper(getApplicationContext());
+        }
+
         Log.d("BirthdayNotification", "發送通知給: " + friendName);
         String title = "生日提醒";
         String body = friendName + " 今天生日！快去祝福吧！";

@@ -1,6 +1,5 @@
 package com.example.friendloop;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -11,16 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
@@ -54,7 +48,7 @@ public class MainActivity extends AppCompatActivity{
     protected ArrayList<Friend> mDataset = new ArrayList<>();
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected SqlDataBaseHelper mSqlDataBaseHelper;
-
+    private static final int REQUEST_CODE_POST_NOTIFICATIONS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        timeservice();
         // 檢查權限
         if (!checkPermissions()) {
             requestPermissions();
@@ -78,114 +72,29 @@ public class MainActivity extends AppCompatActivity{
         initFloatingActionButton();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("alarm", "onDestroy 被調用，設置 1 分鐘後的提醒");
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            // 設置觸發時間為當前時間的 1 分鐘後
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, 0); // 設置小時為 0 (12:00 AM)
-            calendar.set(Calendar.MINUTE, 0);     // 設置分鐘為 0
-            calendar.set(Calendar.SECOND, 0); // 秒設置為 0
-            calendar.set(Calendar.MILLISECOND, 0); // 毫秒設置為 0
-            // 如果當前時間已經過了今天的 0:00，設置為明天的 0:00
-            if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-                calendar.add(Calendar.DAY_OF_YEAR, 1); // 日期加 1 天
+    private void timeservice() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, "android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
+                // 請求權限
+                ActivityCompat.requestPermissions(this, new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_CODE_POST_NOTIFICATIONS);
+            } else {
+                // 權限已授予，啟動服務
+                Boolean isRun = isServiceRun(this);
+                Log.d("Timer", "onReceive: Service running 1?: "+ isRun);
+                if (!isRun){
+                    startRunService(this);
+                }
             }
-
-            long triggerTime = calendar.getTimeInMillis();
-            Log.d("alarm", "AlarmManager 設置的觸發時間：" + new Date(triggerTime).toString());
-
-            // 創建 PendingIntent
-            Intent intent = new Intent(this, BirthdayNotificationReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    this,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-
-            // 設置 AlarmManager
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTime,
-                    pendingIntent
-            );
-
-            Log.d("alarm", "AlarmManager 已設置，將在 1 分鐘後觸發");
-        }
-    }
-    private void createNotificationChannel() {
-        // 僅在 Android 8.0（API 26）及以上版本需要創建通知通道
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "default"; // 與通知中指定的 channelId 一致
-            String channelName = "Birthday Notification";
-            String channelDescription = "提醒朋友的生日通知";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
-            channel.setDescription(channelDescription);
-
-            // 註冊通知通道
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
+        } else {
+            // 如果是低於 Android 13 的版本，可以直接發送通知
+            Boolean isRun = isServiceRun(this);
+            Log.d("Timer", "onReceive: 有Service running 2?: "+ isRun);
+            if (!isRun){
+                startRunService(this);
             }
         }
     }
-//    private void setupDailyAlarm() {
-//        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-//        boolean isAlarmSet = prefs.getBoolean("isAlarmSet", false);
-//        BirthdayNotification(this);
-//        if (!isAlarmSet) {
-//            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.set(Calendar.HOUR_OF_DAY, 9);
-//            calendar.set(Calendar.MINUTE, 0);
-//            calendar.set(Calendar.SECOND, 0);
-//
-//            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-//                calendar.add(Calendar.DAY_OF_YEAR, 1);
-//            }
-//            Intent intent = new Intent(this, BirthdayNotificationReceiver.class);
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-//                    this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-//
-//            if (alarmManager != null) {
-//                alarmManager.setRepeating(
-//                        AlarmManager.RTC_WAKEUP,
-//                        calendar.getTimeInMillis(),
-//                        AlarmManager.INTERVAL_DAY,
-//                        pendingIntent
-//                );
-//            }
-//            // 更新 SharedPreferences，標記 Alarm 已設置
-//            prefs.edit().putBoolean("isAlarmSet", true).apply();
-//        }
-//    }
 
-    private void BirthdayNotification(Context context) {
-        // 一次性執行任務（啟動時立即執行）
-        OneTimeWorkRequest immediateWorkRequest = new OneTimeWorkRequest.Builder(BirthdayNotificationManager.class).build();
-        WorkManager.getInstance(context.getApplicationContext()).enqueue(immediateWorkRequest);
-
-        // 定期執行任務（每天檢查一次）
-        PeriodicWorkRequest birthdayWorkRequest = new PeriodicWorkRequest.Builder(
-                BirthdayNotificationManager.class,
-                1, // 每1天執行一次
-                TimeUnit.DAYS
-        ).build();
-
-        WorkManager.getInstance(context.getApplicationContext())
-                .enqueueUniquePeriodicWork(
-                        "BirthdayReminderWork",
-                        ExistingPeriodicWorkPolicy.KEEP,
-                        birthdayWorkRequest
-                );
-    }
 
     @Override
     protected void onStart() {
@@ -225,6 +134,19 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 // 權限被拒絕
                 Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 權限授予，啟動服務
+                Boolean isRun = isServiceRun(this);
+                Log.d("Timer", "onReceive: Service running 3?: "+ isRun);
+                if (!isRun){
+                    startRunService(this);
+                }
+            } else {
+                // 權限拒絕，提示用戶
+                Toast.makeText(this, "無法發送通知，未獲得相關權限", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -343,4 +265,34 @@ public class MainActivity extends AppCompatActivity{
 //    public void onDotClick(View view) {
 //        Toast.makeText(this, "點擊了更多", Toast.LENGTH_LONG).show();
 //    }
+
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void startRunService(Context context) {
+        Intent intent = new Intent(context,TimerService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+            Log.d("Timer", "start");
+        }
+        context.startService(intent);
+    }
+
+    private Boolean isServiceRun(Context context){
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> list =  manager.getRunningServices(Integer.MAX_VALUE);
+        for (ActivityManager.RunningServiceInfo info : list){
+            if (TimerService.class.getName().equals(info.service.getClassName())){
+                return true;
+            } else {
+
+            }
+        }
+        return false;
+    }
 }

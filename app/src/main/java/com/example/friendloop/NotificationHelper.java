@@ -50,7 +50,7 @@ public class NotificationHelper extends ContextWrapper
         expandedView.setTextViewText(R.id.timestamp,curtime);
         expandedView.setImageViewResource(R.id.notification_collapsed_left_button, R.drawable.no);
         expandedView.setImageViewResource(R.id.notification_collapsed_right_button, R.drawable.yes);
-        Notification notification = new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL)
+        Notification notification = new NotificationCompat.Builder(getApplicationContext(), SECONDARY_CHANNEL)
                 .setSmallIcon(R.drawable.sms)
                 .setContentTitle(title)
                 .setContentText(body)

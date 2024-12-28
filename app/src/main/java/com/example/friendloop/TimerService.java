@@ -43,7 +43,7 @@ public class TimerService extends Service implements Runnable{
     @Override
     public void run() {
         handler.sendEmptyMessage(1);
-        handler.postDelayed(this,5*1000);
+        handler.postDelayed(this,24*60*60*1000);
         Log.d("Timer", "run");
     }
 

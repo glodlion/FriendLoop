@@ -32,7 +32,7 @@
             android:layout_weight="0.25"
             android:gravity="center|left"
             android:text="TextView"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"

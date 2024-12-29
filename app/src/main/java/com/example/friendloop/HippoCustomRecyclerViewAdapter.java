@@ -90,21 +90,21 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                                 // 建立 AlertDialog.Builder
                                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-// 載入自訂的佈局
+                                // 載入自訂的佈局
                                 LayoutInflater inflater = LayoutInflater.from(mContext);
                                 View customView = inflater.inflate(R.layout.breakornot, null);
 
-// 設置自訂佈局到 AlertDialog
+                                // 設置自訂佈局到 AlertDialog
                                 builder.setView(customView);
 
-// 取得自訂佈局的元件
+                                // 取得自訂佈局的元件
                                 // 建立對話框
                                 AlertDialog dialog = builder.create();
                                 TextView alertTitle = customView.findViewById(R.id.alertTitle);
                                 ImageButton positiveButton = customView.findViewById(R.id.positiveButton);
                                 ImageButton negativeButton = customView.findViewById(R.id.negativeButton);
 
-// 設置按鈕行為
+                                // 設置按鈕行為
                                 positiveButton.setOnClickListener(v -> {
                                     // 執行刪除好友的操作
                                     SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(mContext);
@@ -124,6 +124,44 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
 
                                 dialog.show();
 
+                            } else if(item.getItemId() == R.id.option3){
+                                SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(mContext);
+                                Cursor cursor = dbHelper.getContactById(position + 1);
+                                if (cursor != null && cursor.moveToFirst()) {
+                                    int nameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
+                                    int phoneIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PHONE);
+                                    int birthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
+                                    int preferenceIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PREFERENCES);
+                                    int pictureIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_IMAGE_URI);
+                                    int intimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
+                                    String name = nameIndex < 0 ? "Default Value" : cursor.getString(nameIndex);
+                                    String phone = phoneIndex < 0 ? "Default Value" : cursor.getString(phoneIndex);
+                                    String birthday = birthdayIndex < 0 ? "Default Value" : cursor.getString(birthdayIndex);
+                                    String preference = preferenceIndex < 0 ? "Default Value" : cursor.getString(preferenceIndex);
+                                    String picture = pictureIndex < 0 ? "Default Value" : cursor.getString(pictureIndex);
+                                    String intimacy = intimacyIndex < 0 ? "Default Value" : cursor.getString(intimacyIndex);
+                                    int intimacyValue = Integer.valueOf(intimacy);
+
+                                    if (intimacyValue < 100){
+                                        intimacyValue += 10;
+                                    }
+
+                                    if(intimacyValue > 100){
+                                        intimacyValue = 100;
+                                    }
+
+                                    Friend friend = new Friend();
+                                    friend.setName(name);
+                                    friend.setPhone(phone);
+                                    friend.setBirthday(birthday);
+                                    friend.setPreferences(preference);
+                                    friend.setPicture(picture);
+                                    friend.setIntimacy(String.valueOf(intimacyValue));
+
+                                    dbHelper.updateContact(position+1, friend);
+                                }
+                                ((MainActivity) mContext).initRecyclerView();
+                                ((MainActivity) mContext).initRecycleView();
                             }
 
                             return false;

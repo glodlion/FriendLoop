@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -244,11 +245,11 @@ public class TimerService extends Service implements Runnable{
 
     private void startForegroundNotification() {
         createNotificationChannel();
-        //Notification notification = new NotificationCompat.Builder(this, "TimerServiceChannel")
-         //       .setContentTitle("Timer Service")
-         //       .setContentText("Service is running...")
-         //       .setSmallIcon(R.drawable.ic_launcher_foreground)
-          //      .build();
-      //  startForeground(1, notification);
+        Notification notification = new NotificationCompat.Builder(this, "TimerServiceChannel")
+                .setContentTitle("Timer Service")
+                .setContentText("Service is running...")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .build();
+        startForeground(1, notification);
     }
 }

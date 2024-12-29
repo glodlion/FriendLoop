@@ -124,10 +124,10 @@ public class AddFriendActivity extends AppCompatActivity {
 
     public void onPictureClick(View view) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivityForResult(intent, 1);
+        intent.setType("image/*"); // 選擇圖片類型
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION); // 授予長期訪問權限
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // 授予讀取權限
+        startActivityForResult(intent, 1); // 啟動選擇器
     }
 
     private void showDatePickerDialog() {
@@ -175,17 +175,29 @@ public class AddFriendActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         // 確保是圖片選擇結果
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            // 獲取選擇的圖片 URI
             if (data != null) {
+                // 獲取選擇的圖片 URI
                 uri = data.getData();
-                try {
-                    // 使用 URI 來顯示選擇的圖片
-                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                    mFriendPicture.setImageBitmap(bitmap);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+
+                if (uri != null) {
+                    try {
+                        // 使用 URI 顯示選擇的圖片
+                        Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        mFriendPicture.setImageBitmap(bitmap);
+
+                        // 授予長期訪問權限
+                        getContentResolver().takePersistableUriPermission(
+                                uri,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        );
+
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -217,24 +229,6 @@ public class AddFriendActivity extends AppCompatActivity {
                 }, 300);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 300) {
-            // 處理使用者的授權回應
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 權限已授予
-                Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                } else {
-                    // 權限拒絕，提示用戶
-                    Toast.makeText(this, "無法發送通知，未獲得相關權限", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                // 權限被拒絕
-                Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
 }

@@ -17,10 +17,9 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 public class QrActivity extends AppCompatActivity {
-
-
     Button mButtonScanner;
     Button mButtonGenerate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +54,8 @@ public class QrActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

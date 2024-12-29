@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide;
 
 public class PersonalActivity extends AppCompatActivity {
 
-    ImageView mPersonalPicture;
+    ImageView mPersonalPicture, mImageIntimacy;
     TextView mPersonalName, mPersonalPhone, mPersonalBirthday, mPersonalPreferences, mPersonalIntimacy, mTitle;
     String name, phone, birthday, preference, picture, intimacy;
     int state, pos;
@@ -39,10 +39,10 @@ public class PersonalActivity extends AppCompatActivity {
 
         init();
         LoadStateData();
-
     }
 
     private void init(){
+        mImageIntimacy = findViewById(R.id.imageIntimacy);
         mPersonalPicture = findViewById(R.id.personalPicture);
         mPersonalName = findViewById(R.id.personalName);
         mPersonalPhone = findViewById(R.id.personalPhone);
@@ -53,7 +53,6 @@ public class PersonalActivity extends AppCompatActivity {
     }
 
     private void LoadStateData(){
-
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         state = sharedPreferences.getInt("state", 0);
         Log.d("Debug", "State: "+state);
@@ -86,6 +85,7 @@ public class PersonalActivity extends AppCompatActivity {
         mPersonalPhone.setText(phone);
         mPersonalBirthday.setText(birthday);
         mPersonalPreferences.setText(preference);
+        mImageIntimacy.setVisibility(View.INVISIBLE);
     }
 
     private void State2(){
@@ -132,6 +132,7 @@ public class PersonalActivity extends AppCompatActivity {
                 mPersonalBirthday.setText(birthday);
                 mPersonalPreferences.setText(preference);
                 mPersonalIntimacy.setText(intimacy);
+                mImageIntimacy.setVisibility(View.VISIBLE);
             }
         }
     }

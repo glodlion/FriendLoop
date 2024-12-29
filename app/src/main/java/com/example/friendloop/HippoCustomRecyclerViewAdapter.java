@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCustomRecyclerViewAdapter.ViewHolder> {
-    public static boolean bIfDebug = true;
-    public static String TAG = "HIPPO_DEBUG";
     private static Context mContext; //存GDD01.class的context
     private ArrayList<Friend> mDataSet = new ArrayList<Friend>();
 
@@ -38,19 +34,15 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         private final TextView mFriendName, mFriendIntimacy;
         private final ImageView mFriendPicture;
         private final ImageView mMore;
-//        private final LinearLayout mListItem;
 
         public ViewHolder(View view, HippoCustomRecyclerViewAdapter adapter)
         {
             super(view);
-            //  設計RecyclerView中點選RecyclerView.ViewHolder的項目，以Toast顯示訊息：「你點選的是第 xx 部電影」
-            // TO DO
             //因為是在另一個xml，因此findViewById需要前面加上view
             mFriendName = (TextView) view.findViewById(R.id.friendName);
             mFriendIntimacy = (TextView) view.findViewById(R.id.friendIntimacy);
             mFriendPicture = (ImageView) view.findViewById(R.id.friendPicture);
             mMore = (ImageView) view.findViewById(R.id.more);
-//            mListItem = (LinearLayout) view.findViewById(R.id.list_item);
 
             mMore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -167,14 +159,12 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                             return false;
                         }
                     });
-
                     // 顯示PopupMenu
                     popup.show();
                 }
             });
 
             view.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -189,22 +179,6 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
                     mContext.startActivity(intent);
                 }
             });
-
-        }
-
-        public TextView getFriendName()
-        {
-            return mFriendName;
-        }
-
-        public ImageView getFriendPicture()
-        {
-            return mFriendPicture;
-        }
-
-        public ImageView getMore()
-        {
-            return mMore;
         }
     }
 
@@ -226,7 +200,6 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
     public void onBindViewHolder(ViewHolder viewHolder, int position)
     {
         // 指派ViewHolder物件，重複使用，動態載入電影名稱(TextView)及圖片Resource ID(ImageView)
-        // TO DO
         viewHolder.itemView.setTag(String.valueOf(position)); //標註Tag
         Friend friend = mDataSet.get(position);
         viewHolder.mFriendName.setText(friend.getName());
@@ -245,7 +218,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
             // 通知 RecyclerView 項目已被刪除
             notifyItemRemoved(position);
 
-            // 如果你希望 RecyclerView 重新整理其後的所有項目索引
+            // 重新整理其後的所有項目索引
             notifyItemRangeChanged(position, mDataSet.size());
         }
     }

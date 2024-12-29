@@ -8,7 +8,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 public class QRCodeGenerator {
-
     // 生成 QR Code 的方法
     public static Bitmap generateQRCode(String text, int width, int height) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();

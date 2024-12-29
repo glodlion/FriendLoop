@@ -23,8 +23,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TimerService extends Service implements Runnable{
-//    public static final String TAG = MyTimeWidget.TAG;
-    public static final String CLICK_EVENT = "android.appwidget.action.Click";
     private String strPromotionUri = "http://jumpin.cc";
     private com.example.friendloop.NotificationHelper mNotiHelper;
     private static final int NOTIFICATION_SECONDARY1 = 1200;
@@ -44,7 +42,7 @@ public class TimerService extends Service implements Runnable{
     @Override
     public void run() {
         handler.sendEmptyMessage(1);
-        handler.postDelayed(this,60*1000);
+        handler.postDelayed(this,24*60*60*1000);
         Log.d("Timer", "run");
     }
 
@@ -63,7 +61,7 @@ public class TimerService extends Service implements Runnable{
         handler.post(this);
     }
 
-    /**更新時間*/
+    /**更新*/
     private void update(){
         Log.d("Timer", "1");
         birthdaycheck();
@@ -241,7 +239,6 @@ public class TimerService extends Service implements Runnable{
             mNotiHelper.notify(NOTIFICATION_SECONDARY1, nb);
         }
     }
-
 
     private void startForegroundNotification() {
         createNotificationChannel();

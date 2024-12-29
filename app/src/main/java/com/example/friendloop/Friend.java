@@ -1,7 +1,5 @@
 package com.example.friendloop;
 
-import android.net.Uri;
-
 public class Friend {
     private String mPicture;
     private String mName;

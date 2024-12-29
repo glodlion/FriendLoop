@@ -3,7 +3,6 @@ package com.example.friendloop;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -31,7 +30,7 @@ public class EditInfomation extends AppCompatActivity {
     Button mChooseBirthday;
     EditText mChangeInfoName, mChangeInfoPhone, mChangeInfoPreferences;
     TextView mChangeInfoBirthday, mTitle, mChangeInfoIntimacy;
-    ImageView mChangeInfoPicture;
+    ImageView mChangeInfoPicture, mImageInfoIntimacy;
     Uri uri;
     SharedPreferences sharedPreferences;
     String name, phone, birthday, preference, picture, intimacy;
@@ -64,14 +63,17 @@ public class EditInfomation extends AppCompatActivity {
         mChangeInfoPreferences = findViewById(R.id.changeInfoPreferences);
         mChangeInfoPicture = findViewById(R.id.changeInfoPicture);
         mChangeInfoIntimacy = findViewById(R.id.changeInfoIntimacy);
+        mImageInfoIntimacy = findViewById(R.id.imageInfoIntimacy);
         mTitle = findViewById(R.id.textView2);
     }
 
     private void LoadStateData(){
         Log.d("Debug", "TEST: "+state);
         if(state == 1){
+            mImageInfoIntimacy.setVisibility(View.INVISIBLE);
             State1();
         } else if(state == 2){
+            mImageInfoIntimacy.setVisibility(View.VISIBLE);
             State2();
         }
     }
@@ -226,6 +228,4 @@ public class EditInfomation extends AppCompatActivity {
         }
         finish();
     }
-
-
 }

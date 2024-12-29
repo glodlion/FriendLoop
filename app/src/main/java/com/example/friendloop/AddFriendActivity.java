@@ -1,31 +1,22 @@
 package com.example.friendloop;
 
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.Manifest;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,10 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileNotFoundException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class AddFriendActivity extends AppCompatActivity {
     Button mChooseBirthday;
@@ -66,14 +54,7 @@ public class AddFriendActivity extends AppCompatActivity {
         mChooseBirthday.setOnClickListener(view -> showDatePickerDialog());
     }
 
-
-
-
-
-
-/*                        以下為新增，為了讀取資料處理
- */
-
+    /* 以下為新增，為了讀取資料處理 */
     private void GetIntentValue(){
 
         String id ="";
@@ -83,17 +64,17 @@ public class AddFriendActivity extends AppCompatActivity {
         if (data != null) {
             String qrCodeContent = data.toString(); // 獲取完整的 URI
             id = extractIdFromUri(qrCodeContent); // 提取 ID
-
         }
         fetchDataFromFirebase(id);
-
     }
+
     private String extractIdFromUri(String qrCodeContent) {
         if (qrCodeContent.startsWith("friendloop://friend/add/")) {
             return qrCodeContent.substring("friendloop://friend/add/".length());
         }
         return ""; // 返回空字符串，表示提取失敗
     }
+
     private void fetchDataFromFirebase(String id) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Data").child(id);
@@ -121,9 +102,7 @@ public class AddFriendActivity extends AppCompatActivity {
         });
     }
 
-    /*                        以上為新增
-     */
-
+    /* 以上為新增 */
 
     private void init(){
         mChooseBirthday = findViewById(R.id.chooseBirthday);
@@ -131,7 +110,6 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddActivityFriendPhone = findViewById(R.id.addActivityFriendPhone);
         mAddActivityFriendBirthday = findViewById(R.id.addActivityFriendBirthday);
         mAddActivityFriendPreferences = findViewById(R.id.addActivityFriendPreferences);
-
         mFriendPicture = findViewById(R.id.addActivityFriendPicture);
         mFriendPicture.setImageResource(R.drawable.ic_launcher_foreground);
     }
@@ -174,9 +152,6 @@ public class AddFriendActivity extends AppCompatActivity {
         SqlDataBaseHelper mSqlDataBaseHelper = new SqlDataBaseHelper(this);
         mSqlDataBaseHelper.addContact(friend);
 
-//        addData(uri.toString(), name, phone, birthdayString, preference, "100");
-
-
         Intent intent = new Intent();
         setResult(100, intent);
     }
@@ -200,15 +175,12 @@ public class AddFriendActivity extends AppCompatActivity {
         }
     }
 
-
-
     public void onCancelClick(View view) {
         finish();
     }
 
     public void onAddClick(View view) {
         saveFriendInfo();
-        //開始親密度計時，每10秒下降10點
         finish();
     }
 }

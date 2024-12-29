@@ -43,6 +43,7 @@ import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity{
     RecyclerView mFriendRecyclerView;
+    private static MainActivity instance;
     protected HippoCustomRecyclerViewAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected ArrayList<Friend> mDataset = new ArrayList<>();
@@ -55,11 +56,11 @@ public class MainActivity extends AppCompatActivity{
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        instance = this;
         timeservice();
         // 檢查權限
         if (!checkPermissions()) {
@@ -176,22 +177,19 @@ public class MainActivity extends AppCompatActivity{
                 Friend friend = new Friend();
                 int nameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
                 int pictureIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_IMAGE_URI);
+                int intimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
                 String name = nameIndex < 0 ? "Default Value" : cursor.getString(nameIndex);
                 String picture = pictureIndex < 0 ? "Default Value" : cursor.getString(pictureIndex);
+                String intimacy = intimacyIndex < 0 ? "Default Value" : cursor.getString(intimacyIndex);
                 friend.setName(name);
                 friend.setPicture(picture);
+                friend.setIntimacy(intimacy);
 
-                //friend.setPhone(cursor.getString(cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PHONE)));
-                //friend.setBirthday(cursor.getString(cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY)));
-                // 假設每個好友有一個固定圖片
-                //friend.setPicture(Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_android_));
                 mDataset.add(friend);
             } while (cursor.moveToNext());
             cursor.close();
         }
     }
-
-
 
     public void initRecycleView()
     {
@@ -294,5 +292,9 @@ public class MainActivity extends AppCompatActivity{
             }
         }
         return false;
+    }
+
+    public static MainActivity getInstance() {
+        return instance;
     }
 }

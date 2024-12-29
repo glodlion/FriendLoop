@@ -30,11 +30,11 @@ import java.util.Calendar;
 public class EditInfomation extends AppCompatActivity {
     Button mChooseBirthday;
     EditText mChangeInfoName, mChangeInfoPhone, mChangeInfoPreferences;
-    TextView mChangeInfoBirthday, mTitle;
+    TextView mChangeInfoBirthday, mTitle, mChangeInfoIntimacy;
     ImageView mChangeInfoPicture;
     Uri uri;
     SharedPreferences sharedPreferences;
-    String name, phone, birthday, preference, picture;
+    String name, phone, birthday, preference, picture, intimacy;
     int state, pos;
 
     @Override
@@ -63,6 +63,7 @@ public class EditInfomation extends AppCompatActivity {
         mChangeInfoBirthday = findViewById(R.id.changeInfoBirthday);
         mChangeInfoPreferences = findViewById(R.id.changeInfoPreferences);
         mChangeInfoPicture = findViewById(R.id.changeInfoPicture);
+        mChangeInfoIntimacy = findViewById(R.id.changeInfoIntimacy);
         mTitle = findViewById(R.id.textView2);
     }
 
@@ -111,6 +112,7 @@ public class EditInfomation extends AppCompatActivity {
         birthday = bundle.getString("birthday");
         picture = bundle.getString("picture");
         preference = bundle.getString("preference");
+        intimacy = bundle.getString("intimacy");
         uri = Uri.parse(picture);
 
         String path = "android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground;
@@ -126,6 +128,7 @@ public class EditInfomation extends AppCompatActivity {
         mChangeInfoPhone.setText(phone);
         mChangeInfoBirthday.setText(birthday);
         mChangeInfoPreferences.setText(preference);
+        mChangeInfoIntimacy.setText(intimacy);
     }
 
     public void onPictureClick(View view) {
@@ -184,6 +187,7 @@ public class EditInfomation extends AppCompatActivity {
         friend.setBirthday(birthdayStringNew);
         friend.setPreferences(preferenceNew);
         friend.setPhone(phoneNew);
+        friend.setIntimacy(intimacy);
 
         SqlDataBaseHelper dbHelper = new SqlDataBaseHelper(this);
         // 執行更新操作

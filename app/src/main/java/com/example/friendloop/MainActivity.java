@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity{
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        instance = this;
-        timeservice();
-        // 檢查權限
+//        timeservice();
+        instance = this;// 檢查權限
         if (!checkPermissions()) {
             requestPermissions();
         }
+
 
         mSqlDataBaseHelper = new SqlDataBaseHelper(this);
 //        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity{
     private boolean checkPermissions() {
         // 檢查相機和儲存權限
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermissions() {
@@ -120,7 +121,8 @@ public class MainActivity extends AppCompatActivity{
         ActivityCompat.requestPermissions(this,
                 new String[]{
                         Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.POST_NOTIFICATIONS
                 }, 300);
     }
 
@@ -132,6 +134,26 @@ public class MainActivity extends AppCompatActivity{
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 權限已授予
                 Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(this, "android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
+                        // 請求權限
+                        ActivityCompat.requestPermissions(this, new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_CODE_POST_NOTIFICATIONS);
+                    } else {
+                        // 權限已授予，啟動服務
+                        Boolean isRun = isServiceRun(this);
+                        Log.d("Timer", "onReceive: Service running 1?: "+ isRun);
+                        if (!isRun){
+                            startRunService(this);
+                        }
+                    }
+                } else {
+                    // 如果是低於 Android 13 的版本，可以直接發送通知
+                    Boolean isRun = isServiceRun(this);
+                    Log.d("Timer", "onReceive: 有Service running 2?: "+ isRun);
+                    if (!isRun){
+                        startRunService(this);
+                    }
+                }
             } else {
                 // 權限被拒絕
                 Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();

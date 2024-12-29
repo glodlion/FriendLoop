@@ -7,6 +7,11 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/option3"
+        android:title="好感度 + 10"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/option2"
         android:title="Break"
         app:showAsAction="never"/>

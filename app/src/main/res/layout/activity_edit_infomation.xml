@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
                 android:layout_marginTop="30dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="20dp"
                 android:text="編輯資訊"
                 android:textColor="#ffffff"
                 android:textSize="40dp"
@@ -71,13 +71,34 @@
                     android:text="點選圖片可更換照片"
                     android:textColor="#ffffff" />
 
-                <TextView
-                    android:id="@+id/changeInfoIntimacy"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="100dp"
-                    android:gravity="center"
-                    android:textColor="#FFFFFF" />
+                    android:layout_marginLeft="100dp">
+
+                    <ImageView
+                        android:id="@+id/imageInfoIntimacy"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/intimacy_value" />
+
+                    <TextView
+                        android:id="@+id/changeInfoIntimacy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="#8BFFED"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageInfoIntimacy"
+                        app:layout_constraintEnd_toEndOf="@+id/imageInfoIntimacy"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/imageInfoIntimacy" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 

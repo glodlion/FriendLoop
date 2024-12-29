@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class QrcodeGenrate extends AppCompatActivity {
-
     SharedPreferences sharedPreferences;
     String key = "";
     ImageView imageView;

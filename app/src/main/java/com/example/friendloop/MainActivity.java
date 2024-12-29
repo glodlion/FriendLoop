@@ -1,10 +1,6 @@
 package com.example.friendloop;
 
 import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,17 +25,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
 import androidx.annotation.NonNull;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity{
     RecyclerView mFriendRecyclerView;
@@ -60,42 +49,23 @@ public class MainActivity extends AppCompatActivity{
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-//        timeservice();
         instance = this;// 檢查權限
+
         if (!checkPermissions()) {
             requestPermissions();
-        }
-
-
-        mSqlDataBaseHelper = new SqlDataBaseHelper(this);
-//        mSqlDataBaseHelper.resetTable(); //當資料表變動時執行一次
-        initSharedPreferences();
-        initFloatingActionButton();
-    }
-
-    private void timeservice() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, "android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
-                // 請求權限
-                ActivityCompat.requestPermissions(this, new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_CODE_POST_NOTIFICATIONS);
-            } else {
-                // 權限已授予，啟動服務
-                Boolean isRun = isServiceRun(this);
-                Log.d("Timer", "onReceive: Service running 1?: "+ isRun);
-                if (!isRun){
-                    startRunService(this);
-                }
-            }
         } else {
-            // 如果是低於 Android 13 的版本，可以直接發送通知
+            // 權限已授予，啟動服務
             Boolean isRun = isServiceRun(this);
-            Log.d("Timer", "onReceive: 有Service running 2?: "+ isRun);
+            Log.d("Timer", "onReceive: Service running 1?: "+ isRun);
             if (!isRun){
                 startRunService(this);
             }
         }
-    }
 
+        mSqlDataBaseHelper = new SqlDataBaseHelper(this);
+        initSharedPreferences();
+        initFloatingActionButton();
+    }
 
     @Override
     protected void onStart() {
@@ -134,31 +104,12 @@ public class MainActivity extends AppCompatActivity{
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 權限已授予
                 Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (ContextCompat.checkSelfPermission(this, "android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
-                        // 請求權限
-                        ActivityCompat.requestPermissions(this, new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_CODE_POST_NOTIFICATIONS);
-                    } else {
-                        // 權限已授予，啟動服務
-                        Boolean isRun = isServiceRun(this);
-                        Log.d("Timer", "onReceive: Service running 1?: "+ isRun);
-                        if (!isRun){
-                            startRunService(this);
-                        }
-                    }
-                } else {
-                    // 如果是低於 Android 13 的版本，可以直接發送通知
-                    Boolean isRun = isServiceRun(this);
-                    Log.d("Timer", "onReceive: 有Service running 2?: "+ isRun);
-                    if (!isRun){
-                        startRunService(this);
-                    }
-                }
             } else {
                 // 權限被拒絕
                 Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
             }
         }
+
         if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 權限授予，啟動服務
@@ -234,7 +185,6 @@ public class MainActivity extends AppCompatActivity{
             scrollPosition = ((LinearLayoutManager) mFriendRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
         }
 
-
         mLayoutManager = new LinearLayoutManager(MainActivity.this);
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
@@ -254,18 +204,6 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    // 接收回傳資料
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 100 && resultCode == 100) {
-            // 取得資料
-
-
-        }
-    }
-
     public void onPersonalClick(View view) {
         // 修改 SharedPreferences 中的 state 值
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -281,13 +219,6 @@ public class MainActivity extends AppCompatActivity{
         Intent intent = new Intent(MainActivity.this, QrActivity.class);
         startActivity(intent);
     }
-
-//    public void onDotClick(View view) {
-//        Toast.makeText(this, "點擊了更多", Toast.LENGTH_LONG).show();
-//    }
-
-
-
 
     @Override
     protected void onDestroy() {

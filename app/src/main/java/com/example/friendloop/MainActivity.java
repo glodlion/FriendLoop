@@ -65,14 +65,14 @@ public class MainActivity extends AppCompatActivity{
         mSqlDataBaseHelper = new SqlDataBaseHelper(this);
         initSharedPreferences();
         initFloatingActionButton();
-        initRecyclerView();
-        initRecycleView();
         Log.d("test1", "onCreate()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        initRecyclerView();
+        initRecycleView();
     }
 
     private enum LayoutManagerType

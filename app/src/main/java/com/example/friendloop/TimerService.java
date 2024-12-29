@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,10 +16,7 @@ import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.work.ListenableWorker;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,7 +43,7 @@ public class TimerService extends Service implements Runnable{
     @Override
     public void run() {
         handler.sendEmptyMessage(1);
-        handler.postDelayed(this,24*60*60*1000);
+        handler.postDelayed(this,60*1000);
         Log.d("Timer", "run");
     }
 
@@ -160,51 +158,55 @@ public class TimerService extends Service implements Runnable{
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     Log.d("Intimacy","開始讀取");
-                    int IntimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
-                    int NameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
-                    String Name = NameIndex < 0 ? "Default Value" : cursor.getString(NameIndex);
-                    if (IntimacyIndex >= 0) {
-                        String intimacyValue = cursor.getString(IntimacyIndex);
+                    int idIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_ID);
+                    int nameIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_NAME);
+                    int phoneIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PHONE);
+                    int birthdayIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_BIRTHDAY);
+                    int preferenceIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_PREFERENCES);
+                    int pictureIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_IMAGE_URI);
+                    int intimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
+                    String id = idIndex < 0 ? "Default Value" : cursor.getString(idIndex);
+                    String name = nameIndex < 0 ? "Default Value" : cursor.getString(nameIndex);
+                    String phone = phoneIndex < 0 ? "Default Value" : cursor.getString(phoneIndex);
+                    String birthday = birthdayIndex < 0 ? "Default Value" : cursor.getString(birthdayIndex);
+                    String preference = preferenceIndex < 0 ? "Default Value" : cursor.getString(preferenceIndex);
+                    String picture = pictureIndex < 0 ? "Default Value" : cursor.getString(pictureIndex);
+                    String intimacy = intimacyIndex < 0 ? "Default Value" : cursor.getString(intimacyIndex);
 
-                        try {
-                            // 將字串轉換為整數
-                            int intimacy = Integer.parseInt(intimacyValue);
+                    try {
+                        // 將字串轉換為整數
+                        int intimacyValue = Integer.parseInt(intimacy);
 
+                        if(intimacyValue >= 0){
                             // 減去 5
-                            intimacy -= 5;
-
-                            // 確保數值不低於 0（可選）
-                            if(intimacy<60)
-                            {
-
-                                sendBreakNotification(Name);
-                            }
-
-                            // 將更新的值保存回資料庫
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(SqlDataBaseHelper.COLUMN_INTIMACY, intimacy);
-
-                            // 獲取資料庫寫入實例
-                            SQLiteDatabase db = dbHelper.getWritableDatabase();
-                            db.update(
-                                    SqlDataBaseHelper.TABLE_CONTACTS, // 替換為實際表名稱
-                                    contentValues,
-                                    SqlDataBaseHelper.COLUMN_ID + " = ?", // 替換為條件列
-                                    new String[]{cursor.getString(cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_ID))} // 替換為條件值
-                            );
-                            // 更新到新的字串
-                            String updatedIntimacyValue = String.valueOf(intimacy);
-
-                            // 印出更新後的值
-                            Log.d("Intimacy", "更新後的 Intimacy 值：" + updatedIntimacyValue);
-
-                        } catch (NumberFormatException e) {
-                            // 處理無法轉換為整數的情況
-                            Log.e("Intimacy", "Intimacy 值無法轉換為整數：" + intimacyValue, e);
+                            intimacyValue -= 5;
                         }
-                    } else {
-                        Log.d("Intimacy", "Intimacy 欄位不存在，使用預設值");
+
+                        // 確保數值不低於 0（可選）
+                        if(intimacyValue<60)
+                        {
+                            sendBreakNotification(name);
+                        }
+
+                        Friend friend = new Friend();
+                        friend.setName(name);
+                        friend.setPhone(phone);
+                        friend.setBirthday(birthday);
+                        friend.setPreferences(preference);
+                        friend.setPicture(picture);
+                        friend.setIntimacy(String.valueOf(intimacyValue));
+
+                        // 執行更新操作
+                        dbHelper.updateContact(Integer.parseInt(id), friend);
+
+                        // 印出更新後的值
+                        Log.d("Intimacy", "更新後的 Intimacy 值：" + intimacyValue);
+
+                    } catch (NumberFormatException e) {
+                        // 處理無法轉換為整數的情況
+                        Log.e("Intimacy", "Intimacy 值無法轉換為整數：" + intimacy, e);
                     }
+
 
 
                 } while (cursor.moveToNext());
@@ -214,6 +216,9 @@ public class TimerService extends Service implements Runnable{
             Log.e("Intimacy", "Error checking birthdays", e);
         } finally {
             if (cursor != null) cursor.close();
+            MainActivity mainActivity = MainActivity.getInstance();
+            mainActivity.initRecyclerView();
+            mainActivity.initRecycleView();
         }
 
     }

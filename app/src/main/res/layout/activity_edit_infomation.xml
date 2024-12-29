@@ -70,6 +70,15 @@
                     android:gravity="center"
                     android:text="點選圖片可更換照片"
                     android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/changeInfoIntimacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="100dp"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF" />
+
             </LinearLayout>
 
             <EditText
@@ -162,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="40dp"
                 android:onClick="onChangeClick"
                 app:srcCompat="@drawable/btn_change" />
 

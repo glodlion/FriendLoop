@@ -171,7 +171,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
     }
 
     // Constructor
-    public HippoCustomRecyclerViewAdapter(Context context, ArrayList<Friend> mDataSet)
+    public HippoCustomRecyclerViewAdapter(MainActivity context, ArrayList<Friend> mDataSet)
     {
         this.mContext = context;
         this.mDataSet = mDataSet;

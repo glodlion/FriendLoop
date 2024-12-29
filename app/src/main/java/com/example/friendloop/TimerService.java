@@ -243,9 +243,9 @@ public class TimerService extends Service implements Runnable{
     private void startForegroundNotification() {
         createNotificationChannel();
         Notification notification = new NotificationCompat.Builder(this, "TimerServiceChannel")
-                .setContentTitle("Timer Service")
-                .setContentText("Service is running...")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Friend Loop")
+                .setContentText("Looping...")
+                .setSmallIcon(R.drawable.friendloop_app_icon)
                 .build();
         startForeground(1, notification);
     }

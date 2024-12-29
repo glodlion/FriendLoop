@@ -60,7 +60,7 @@ public class QrcodeGenrate extends AppCompatActivity {
 
                     // 生成 QR Code 並顯示
                     String qrContent = "friendloop://friend/add/" + key;
-                    Bitmap bitmap = generateQRCode(qrContent, 100, 100);
+                    Bitmap bitmap = generateQRCode(qrContent, 150, 150);
                     BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
                     imageView.setImageDrawable(drawable);
                 })

@@ -97,8 +97,6 @@
         <receiver
             android:name=".NotificationDismissReceiver"
             android:exported="false" />
-
-
     </application>
 
 </manifest>

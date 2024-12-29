@@ -135,6 +135,9 @@ public class AddFriendActivity extends AppCompatActivity {
             mAddActivityFriendBirthday.setText(selectedDate);
         }, year, month, day);
 
+        // 設置最大日期為今天
+        datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+
         datePickerDialog.show();
     }
 

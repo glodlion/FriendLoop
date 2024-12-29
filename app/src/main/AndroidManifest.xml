@@ -38,7 +38,8 @@
 
         <activity
             android:name=".EditInfomation"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".QrActivity"
             android:exported="false" />
@@ -47,7 +48,8 @@
             android:exported="false" />
         <activity
             android:name=".AddFriendActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <!-- 定義 URI 資訊, Deep link , 用來qrcode 導向 -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -95,9 +97,6 @@
         <receiver
             android:name=".NotificationDismissReceiver"
             android:exported="false" />
-        <receiver android:name=".BirthdayNotificationReceiver" />
-
-
     </application>
 
 </manifest>

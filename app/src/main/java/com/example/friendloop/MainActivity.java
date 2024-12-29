@@ -104,25 +104,26 @@ public class MainActivity extends AppCompatActivity{
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 權限已授予
                 Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 權限授予，啟動服務
+                    Boolean isRun = isServiceRun(this);
+                    Log.d("Timer", "onReceive: Service running 3?: "+ isRun);
+                    if (!isRun){
+                        startRunService(this);
+                    }
+                } else {
+                    // 權限拒絕，提示用戶
+                    Toast.makeText(this, "無法發送通知，未獲得相關權限", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 // 權限被拒絕
                 Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
             }
         }
 
-        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 權限授予，啟動服務
-                Boolean isRun = isServiceRun(this);
-                Log.d("Timer", "onReceive: Service running 3?: "+ isRun);
-                if (!isRun){
-                    startRunService(this);
-                }
-            } else {
-                // 權限拒絕，提示用戶
-                Toast.makeText(this, "無法發送通知，未獲得相關權限", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
+//
+//        }
     }
 
     // 初始化SharedPreferences，用來存個人資訊及編輯狀態(個人資訊、朋友資訊)

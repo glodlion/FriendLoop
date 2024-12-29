@@ -203,7 +203,7 @@ public class HippoCustomRecyclerViewAdapter extends RecyclerView.Adapter<HippoCu
         viewHolder.itemView.setTag(String.valueOf(position)); //標註Tag
         Friend friend = mDataSet.get(position);
         viewHolder.mFriendName.setText(friend.getName());
-        Glide.with(viewHolder.mFriendPicture.getContext())
+        Glide.with(viewHolder.itemView.getContext())
                 .load(Uri.parse(friend.getPicture()))  // 這是圖片的 URI
                 .override(500, 500)
                 .into(viewHolder.mFriendPicture);  // 設置圖片到 ImageView

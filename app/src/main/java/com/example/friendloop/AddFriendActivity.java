@@ -1,7 +1,9 @@
 package com.example.friendloop;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,11 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -48,6 +53,9 @@ public class AddFriendActivity extends AppCompatActivity {
             return insets;
         });
 
+        if (!checkPermissions()) {
+            requestPermissions();
+        }
         init();
         GetIntentValue();//當網頁跳轉有亂碼時去雲端取資料並自動輸入
 
@@ -152,11 +160,16 @@ public class AddFriendActivity extends AppCompatActivity {
 
         Friend friend = new Friend(name, uri.toString() , phone , birthdayString , preference, "100");
 
+        Log.d("test1", uri.toString());
+
         SqlDataBaseHelper mSqlDataBaseHelper = new SqlDataBaseHelper(this);
         mSqlDataBaseHelper.addContact(friend);
 
-        Intent intent = new Intent();
-        setResult(100, intent);
+        MainActivity mainActivity = MainActivity.getInstance();
+        mainActivity.initRecyclerView();
+        mainActivity.initRecycleView();
+
+        finish();
     }
 
     @Override
@@ -185,5 +198,43 @@ public class AddFriendActivity extends AppCompatActivity {
     public void onAddClick(View view) {
         saveFriendInfo();
         finish();
+    }
+
+    private boolean checkPermissions() {
+        // 檢查相機和儲存權限
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        // 請求相機和儲存權限
+        ActivityCompat.requestPermissions(this,
+                new String[]{
+                        android.Manifest.permission.CAMERA,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.POST_NOTIFICATIONS
+                }, 300);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 300) {
+            // 處理使用者的授權回應
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 權限已授予
+                Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // 權限拒絕，提示用戶
+                    Toast.makeText(this, "無法發送通知，未獲得相關權限", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                // 權限被拒絕
+                Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

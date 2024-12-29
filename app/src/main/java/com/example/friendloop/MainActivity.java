@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity{
     private static MainActivity instance;
     protected HippoCustomRecyclerViewAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected ArrayList<Friend> mDataset = new ArrayList<>();
+    public ArrayList<Friend> mDataset = new ArrayList<>();
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected SqlDataBaseHelper mSqlDataBaseHelper;
     private static final int REQUEST_CODE_POST_NOTIFICATIONS = 1;
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity{
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        instance = this;// 檢查權限
-
+        instance = this;
+        // 檢查權限
         if (!checkPermissions()) {
             requestPermissions();
         } else {
@@ -65,13 +65,14 @@ public class MainActivity extends AppCompatActivity{
         mSqlDataBaseHelper = new SqlDataBaseHelper(this);
         initSharedPreferences();
         initFloatingActionButton();
+        initRecyclerView();
+        initRecycleView();
+        Log.d("test1", "onCreate()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        initRecyclerView();
-        initRecycleView();
     }
 
     private enum LayoutManagerType
@@ -120,10 +121,6 @@ public class MainActivity extends AppCompatActivity{
                 Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
             }
         }
-
-//        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
-//
-//        }
     }
 
     // 初始化SharedPreferences，用來存個人資訊及編輯狀態(個人資訊、朋友資訊)
@@ -153,7 +150,7 @@ public class MainActivity extends AppCompatActivity{
                 int pictureIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_IMAGE_URI);
                 int intimacyIndex = cursor.getColumnIndex(SqlDataBaseHelper.COLUMN_INTIMACY);
                 String name = nameIndex < 0 ? "Default Value" : cursor.getString(nameIndex);
-                String picture = pictureIndex < 0 ? "Default Value" : cursor.getString(pictureIndex);
+                String picture = pictureIndex < 0 ? "android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_foreground : cursor.getString(pictureIndex);
                 String intimacy = intimacyIndex < 0 ? "Default Value" : cursor.getString(intimacyIndex);
                 friend.setName(name);
                 friend.setPicture(picture);
@@ -200,7 +197,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "add friend", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
-                startActivityForResult(intent, 100);
+                startActivity(intent);
             }
         });
     }
@@ -220,6 +217,8 @@ public class MainActivity extends AppCompatActivity{
         Intent intent = new Intent(MainActivity.this, QrActivity.class);
         startActivity(intent);
     }
+
+
 
     @Override
     protected void onDestroy() {
